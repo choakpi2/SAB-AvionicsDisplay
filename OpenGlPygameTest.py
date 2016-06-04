@@ -32,6 +32,7 @@ edges = (
 	(5,7)
 	)
 
+#Draw the Cube
 def Cube():
 	glBegin(GL_LINES)
 	for edge in edges:
@@ -40,23 +41,33 @@ def Cube():
 	glEnd()
 
 def main():
+	#Display Window through pygame
 	pygame.init()
 	display = (800,600)
 	pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
+	#Setting of the gl window
 	gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
+	#Translate the Cube so we can see it
 	glTranslatef(0.0,0.0,-5)
 
 	while True:
+		#Run until Quit Condition is called
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
 				quit()
 
+		#Rotate the Cube
 		glRotatef(1,3,1,1)
+
+		#Clear the Screen, setting up for the next draw cycle
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+		
+		#Draw the Cube
 		Cube()
+
 		pygame.display.flip()
 		pygame.time.wait(10)
 
