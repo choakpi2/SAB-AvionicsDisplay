@@ -4,9 +4,10 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-
-#Defining the Vertices Required in the Cube
-verticies = (
+#Draw the Cube
+def Cube():
+	#Defining the Vertices Required in the Cube
+	verticies = (
 	(1,-1,-1),
 	(1,1,-1),
 	(-1,1,-1),
@@ -16,8 +17,8 @@ verticies = (
 	(-1,-1,1),
 	(-1,1,1))
 
-#Defining the Edges by connecting the Vertices
-edges = (
+	#Defining the Edges by connecting the Vertices
+	edges = (
 	(0,1),
 	(0,3),
 	(0,4),
@@ -31,9 +32,6 @@ edges = (
 	(5,4),
 	(5,7)
 	)
-
-#Draw the Cube
-def Cube():
 	glBegin(GL_LINES)
 	for edge in edges:
 		for vertex in edge:
@@ -48,7 +46,7 @@ def main():
 
 	#Setting of the gl window
 	gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
-
+		
 	#Translate the Cube so we can see it
 	glTranslatef(0.0,0.0,-5)
 
