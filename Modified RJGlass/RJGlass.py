@@ -26,7 +26,7 @@ class screen_c(object):
 		self.guage_list = guage_list #list of guages to cycle through.
 		self.guage_index = 0
 		self.x = x
-		self.y = 0
+		self.y = 20
 		self.width = 512
 		self.heigth = 768
 	

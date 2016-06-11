@@ -1,8 +1,7 @@
 from guage import *
-import formula
 import pickle
 import random
-#This is code to import config file (config.py)
+
 try:
 	import config
 except ImportError:
@@ -14,30 +13,27 @@ except ImportError:
 	import config
 
 
-class data_obj(object):
-	#Used to make a object for Definition to link to
+
+
+class data_obj(object): #Used to make a object for Definition to link to
+
 	def __init__(self, value):
 		self.value = value
 		self.adjusted = value #Used incase value needs to be adjusted from data inputed from FSX.
 
-class event_obj(object):
-	#Used to hold send event, with its data
+
+class event_obj(object): #Used to hold send event, with its data
+
 	def __init__(self,value):
 		self.value = value
 		self.event_id = 0 #Set for 0 initially, will be equal to index of event list for this object
 		self.update = False #Can be used  to tell when to update data to FSX.
+
 		
 class EICAS_pickle_c(object):
+
 	def __init__(self, aircraft):
-		#self.attitude = aircraft.attitude
 		self.list = [aircraft.Eng_1, aircraft.Eng_2]
-			
-		#self.Eng_1 = aircraft.Eng_1
-		#self.Eng_2 = aircraft.Eng_2
-		
-	#def pickle_string(self):
-	#	return pickle.dumps(self, -1)
-	
 	
 	def pickle_string(self):
 		l = []
@@ -47,22 +43,17 @@ class EICAS_pickle_c(object):
 	
 	
 class Engine_constants(object):
+
 	def __init__(self):
-		
-		#N1 Overspeed
 		self.N1_Overspeed = 98.6
-		#N2 Overspeed
 		self.N2_Overspeed = 99.3
-		#ITT Overtemp
 		self.ITT_OverTemp = 900
-		#Oil Temp
 		self.OilTemp_Red = 163
 		self.OilTemp_Amber = 150
-		#Oil Pressure
 		self.OilPres_Red = 25
 		self.OilPres_Amber = 115
-		#Fan Vibraton
 		self.FANVIB_Yellow = 2.4
+
 
 class show_GEARFLAP_c(object):
 		#Timer for flap and Gear guages.
@@ -75,8 +66,7 @@ class show_GEARFLAP_c(object):
 			self.time = 0
 			self.max_time = 30
 			
-		def comp(self, flaps, gear_up, brakes_normal, globaltime):
-			
+		def comp(self, flaps, gear_up, brakes_normal, globaltime):			
 			if (flaps.pos.value == 0.0) & (gear_up== True) & (brakes_normal == True):
 				if (globaltime - self.time) > self.max_time:
 					self.show = False
@@ -116,12 +106,13 @@ class showFANVIB_c(object):
 		else: #check for 2 second delay
 			if (globaltime - self.timer) < 2.0:
 				self.show = False 
+
 			
 class Trim_c(object):
+
 	def __init__(self):
 		self.Aileron = data_obj(0)
 		self.Elevator = data_obj(0)
-		#self.Elevator_disp = 0
 		self.Rudder = data_obj(0)
 		self.needles_green = False
 		self.elevator_green = False
@@ -139,14 +130,14 @@ class Trim_c(object):
 			self.needles_green = True
 		else:
 			self.needles_green = False
+
 		
 class APU_c(object):
 	
 	def random_EGT_temp(self):
 			#From 520 to 580
 			self.EGT_temp = int(random.random() * 60 + 520)
-		
-		
+				
 	def __init__(self):
 		self.RPM = data_obj(100.0)
 		self.EGT = 0
@@ -228,8 +219,7 @@ class Brakes_c(object):
 			else:
 				self.disp_color = red
 				self.overtemped = True
-				
-	
+					
 	def get_random_value(self):
 		#Used to get a suedo bell curver random number
 		#Limit 0.35 to 0.65
@@ -360,12 +350,14 @@ class Brakes_c(object):
 
 
 class Wheel_c(object):
+    
 	def __init__(self, name):
 		self.name = name
 		self.position = data_obj(0.0) #Range from 0 to 1.0
 		
 	
 class Gear_c(object):
+    
 	def __init__(self):
 		self.Left = Wheel_c("LEFT")
 		self.Right = Wheel_c("RIGHT")
@@ -378,6 +370,8 @@ class Gear_c(object):
 			self.upandlocked = True
 		else:
 			self.upandlocked = False
+   
+   
 class flaps_c(object):
 	
 	def __init__(self):

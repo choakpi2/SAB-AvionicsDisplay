@@ -19,9 +19,9 @@ LINES = 1
 #X resolution of window
 window_x = 1024
 #Y resolution of window
-window_y = 768
+window_y = 1024
 #Full screen
-full_screen= False
+full_screen= True
 
 #Set Mode of program
 mode = TEST #Note: case sensitive
