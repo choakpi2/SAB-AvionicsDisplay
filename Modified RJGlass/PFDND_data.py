@@ -5,15 +5,15 @@ import pickle
 
 
 
-class data_obj(object):
-    #Used to make a object for Definition to link to
+class data_obj(object): #Used to make a object for Definition to link to
+
     def __init__(self, value):
         self.value = value
         self.adjusted = value #Used incase value needs to be adjusted from data inputed from FSX.
 
 
-class event_obj(object):
-    #Used to hold send event, with its data
+class event_obj(object): #Used to hold send event, with its data
+
     def __init__(self,value):
         self.value = value
         self.event_id = 0 #Set for 0 initially, will be equal to index of event list for this object

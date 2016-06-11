@@ -1,12 +1,8 @@
-import socket
-import csv
 import time
 import config
 from guage import *
-import keyboard
 import math
 import sounds
-import formula
 import pickle
 from PFDND_data import *
 from EICAS_data import *
@@ -67,11 +63,7 @@ class data(object):
   
         #Initialize sounds
         self.callouts = sounds.init_callouts(True)
-        #Dynamic variable for testing
-        self.dynamic_value = 0
-        self.dynamic_step = 1
-        
-        
+
     def quit(self):
         self.quit_flag = True
       

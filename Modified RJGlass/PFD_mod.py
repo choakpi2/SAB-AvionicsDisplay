@@ -874,6 +874,7 @@ class PFD_Guage(object):
 					if marker.count > 1.0: marker.count-=1.0
 				
 			glPopMatrix()
+   
 		def draw_declutter_arrow(self, w, h):
 			
 			glBegin(GL_LINE_STRIP)
