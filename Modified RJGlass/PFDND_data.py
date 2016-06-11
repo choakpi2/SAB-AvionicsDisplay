@@ -17,6 +17,7 @@ class event_obj(object):
 		self.update = False #Can be used  to tell when to update data to FSX.
 		
 class PFD_pickle_c(object):
+    
 	def __init__(self, aircraft):
 		self.attitude = aircraft.attitude
 		
@@ -24,32 +25,34 @@ class PFD_pickle_c(object):
 		return pickle.dumps(self, -1)
 	
 class ND_c(object): #Class the handles the Nav Display (ND)
+
 	def __init__(self):
 		self.range = range_c()
 		self.dis_traveled = dis_travel_c()
 		
 class dis_travel_c(ND_c):
+    
 	def __init__(self):
 		self.prev_lat = 1.0 #Used to caclulate total distance traveled
 		self.prev_long = 1.0
 		self.total = 0.0 #Total distance traveled
 		self.increment = 0.0
+  
 	def calc(self, lat, long):
 		#print lat,long, self.prev_lat, self.prev_long
 		d = formula.dist_latlong_nm((lat,long),(self.prev_lat,self.prev_long))
 		if d>0.005: #Used if isn't moving plane doesn't slowly move. Due to calc not being 0.0
-			self.total +=d
-							
+			self.total +=d	
 		self.prev_lat = lat
 		self.prev_long = long
 		self.increment = d
-		#print self.total, d
+
 	def reset(self):
 		self.total = 0.0
 		self.increment = 0.0
 		
-		
 class range_c(ND_c):
+    
 	def __init__(self):
 		self.index = 3
 		self.ranges = [5, 10, 20, 40, 80, 160, 320]  #The ranges possible for ND display 
@@ -66,8 +69,8 @@ class range_c(ND_c):
 		if self.index<0: self.index =0
 		self.value = self.ranges[self.index]
 
-		
 class MDA_DH_c(object): #The class for MDA and DH (They have very similar functions)
+
 	def __init__(self, step):
 		self.bug = 200
 		self.visible = False
@@ -89,13 +92,13 @@ class MDA_DH_c(object): #The class for MDA and DH (They have very similar functi
 		if self.visible: #Must be visible to change value
 			self.bug += self.increment
 			self.changed = True
+   
 	def bug_decrease(self):
 		self.changed = True
 		if self.visible: #Must be visible to change value
 			self.bug -= self.increment
 			if self.bug <0:
 				self.bug = 0
-			
 			
 class altimeter_c(object):
 	
@@ -126,6 +129,7 @@ class altimeter_c(object):
 		self.setting = self.pressure_HPA #Since converting to HG HPA is valid setting
 		self.Kohlsmanx16.value = int(round(self.pressure_HPA * 16, 0))
 		self.Kohlsmanx16.update = True
+  
 	def reset_setting(self):
 		#Reset it to 29.92 / 1013
 		self.pressure_HG = 29.92
@@ -136,6 +140,7 @@ class altimeter_c(object):
 			self.setting = self.pressure_HG
 		else:
 			self.setting = self.pressure_HPA
+   
 	def  inc_setting(self):
 		#increase the Kohlsman Pressure
 		if self.pressure_unit == self.HG:
@@ -153,6 +158,7 @@ class altimeter_c(object):
 		else:
 			self.pressure_HPA -= 1
 			self.convert_to_HG()
+   
 	def change_unit(self):
 		if self.pressure_unit == self.HG:
 			round(self.pressure_HPA,0) #Convert it to .0, to be consistent.
@@ -164,6 +170,7 @@ class altimeter_c(object):
 			self.pressure_unit = self.HG
 			self.setting = self.pressure_HG
 			self.convert_to_HPA() #Used to update everything, and send data to FSX
+   
 	def bug_inc(self):
 		self.bug.value += 100
 		if self.bug.value >60000: self.bug.value = 60000
@@ -173,6 +180,7 @@ class altimeter_c(object):
 		if self.bug.value < 0: self.bug.value = 0
 		
 class HSI_c(object):
+    
 	def __init__(self):
 		#Constants
 		self.NADA =0
@@ -223,28 +231,28 @@ class VOR_c(object):
 		self.hasGS = data_obj(0)
 		self.hasLoc = data_obj(0)
 		self.radial = data_obj(20)
-		#self.radial = 200
 		self.ToFrom = data_obj(2)
 		self.ToFrom.TO = 1
 		self.ToFrom.FROM = 2
 		self.active = data_obj(-1)
+
 class NAV_c(object):
-	#Class for navaids, 1 and 2
+
 	def cycle_Active_NAV(self): #Between VOR1 and VOR2 for now.
 		if self.active == self.VOR1:
 			self.active = self.VOR2
 		else:
 			self.active = self.VOR1
+
 	def __init__(self):
 		self.VOR1 = VOR_c("VOR1")
 		self.VOR2 = VOR_c("VOR2")
 		self.ADF1 = ADF_c("ADF1")
 		self.ADF2 = ADF_c("ADF2")
 		self.active = self.VOR1  #Make VOR1 active nav.
-	#	self.VOR2.radial.value = 150
-	#	self.VOR2.hasGS.value = -1
-	#	self.VOR2.ID.value = "CVG"
+
 class ADF_c(object):
+
 	def __init__(self, name):
 		self.radial = data_obj(100)
 		self.active = data_obj(True)
@@ -259,52 +267,20 @@ class attitude_c(object):
 		self.FD_active = data_obj(0)
 		self.FD_pitch = data_obj(10.0)
 		self.FD_bank = data_obj(10.0)
-#		self.GS = -127
 		self.marker = marker_c()
 		self.turn_coord = data_obj(0)
 		
 class marker_c(attitude_c):
-		def __init__(self):
-			#Constants
-			self.OM = 1
-			self.MM = 2
-			self.IM = 3
-			
-			self.value = self.OM #Which marker is on
-			self.count = 0
-
-
-
-
-		
-#class gear_c(object):
-#	def __init__(self):
-#		self.handle = data_obj(0) #Either 0 or -1 
-
-class V_speed_c(object):
-	
-	def inc(self):
-		self.value += 1
-		if self.value > 350:
-			self.value = 350
-			
-	def dec(self):
-		self.value -= 1
-		if self.value < 40:
-			self.value = 40
-	
-	def onoff(self):
-		if self.visible:
-			self.visible= False
-		else:
-			self.visible = True
-	
-	def __init__(self, text, initvalue):
-		self.value = initvalue
-		self.visible = True
-		self.text = text
+    
+	def __init__(self):
+		self.OM = 1
+		self.MM = 2
+		self.IM = 3
+		self.value = self.OM #Which marker is on
+		self.count = 0
 
 class declutter_c(object):
+    
 	def __init__(self):
 		self.active = False
 		
@@ -315,16 +291,37 @@ class declutter_c(object):
 			self.active = True
 		else:
 			self.active = False
-			
 
 class airspeed_c(object):
-	
+    
+	class V_speed_c(object):
+     
+         def inc(self):
+             self.value += 1
+             if self.value > 350:
+                 self.value = 350
+                 
+         def dec(self):
+             self.value -= 1
+             if self.value < 40:
+                 self.value = 40
+                 
+         def onoff(self):
+             if self.visible:
+                 self.visible = False
+             else:
+                 self.visible = True
+                 
+         def __init__(self,text,initvalue):
+             self.value = initvalue
+             self.visible = True
+             self.text = text
+
 	def set_disp(self, Vspeed):
 		#This sets what is displayed below speed tape. (Goes blank after a few seconds)
 		self.Vspeed_disp = Vspeed
 		self.Vspeed_disp_timer = globaltime.value + 5 #5 seconds display
-		
-		
+
 	def cycle_Vspeed_input(self):
 		temp = self.Vspeed_input
 		if temp == self.V1:
@@ -335,7 +332,7 @@ class airspeed_c(object):
 			out = self.V1
 		self.Vspeed_input = out
 		self.set_disp(out)
-					
+			
 	def inc_Vspeed_input(self):
 		self.Vspeed_input.inc()
 		self.set_disp(self.Vspeed_input)
@@ -351,6 +348,7 @@ class airspeed_c(object):
 	def inc_VT(self):
 		self.VT.inc()
 		self.set_disp(self.VT)
+  
 	def dec_VT(self):
 		self.VT.dec()
 		self.set_disp(self.VT)
@@ -358,7 +356,6 @@ class airspeed_c(object):
 	def visible_VT(self):
 		self.VT.onoff()
 		self.set_disp(self.VT)
-	
 	
 	def __init__(self):
 		self.IAS = data_obj(360.0) #self.IAS.value is value read from FSX
@@ -371,10 +368,10 @@ class airspeed_c(object):
 		self.Mach = data_obj(0.475)
 		self.Mach.active = False
 		self.GS = data_obj(0.0)
-		self.V1 = V_speed_c("V1 ", 135)
-		self.V2 = V_speed_c("V2 ", 144)
-		self.VR = V_speed_c("VR ", 137)
-		self.VT = V_speed_c("VT ", 110)
+		self.V1 = self.V_speed_c("V1 ", 135)
+		self.V2 = self.V_speed_c("V2 ", 144)
+		self.VR = self.V_speed_c("VR ", 137)
+		self.VT = self.V_speed_c("VT ", 110)
 		self.Vspeed_input = self.V1  #Currently selected one to be changed by knob
 		self.Vspeed_disp = self.V1 #The one that is displayed below speed tape
 		self.Vspeed_disp_timer = 0 #Used for delay of timer
@@ -401,3 +398,4 @@ class airspeed_c(object):
 		self.IAS_list.pop(0)
 		a= self.IAS_list
 		self.IAS_diff = (sum(a) / len(a)) / frame_rate * 10
+  

@@ -84,6 +84,8 @@ class data(object):
     def get_PFD_data(self):
         return pickle.dumps(self.PFD_pickle, -1)
         
+    #comp() -- this method simply makes sure that the values of aircraft object
+    #remain in the correct range, that is it does not exceed the indicators etc
     def comp(self, test=False):
         #Test is true, if RJGlass is in test mode.
         self.global_time = globaltime.value
@@ -115,12 +117,7 @@ class data(object):
         EICAS_comp(self)
         self.declutter.comp(self.attitude.pitch.value, self.attitude.bank.value)
         if self.altimeter.indicated.value <-1000: self.altimeter.indicated.value = -1000
-        #self.altimeter.calc_indicated()
-        #Radial calc, to bearing
-        #self.VOR1.bearing = Turn_180(self.VOR1.radial)
         self.attitude.GS = self.NAV.active.GSI.value
-        #self.attitude.GS = self.VOR1.GSI
-        #IAS Acceleration section
         self.comp_frame_time(20)
         self.airspeed.comp_IAS_accel(self.airspeed, self.frame_time)
         
