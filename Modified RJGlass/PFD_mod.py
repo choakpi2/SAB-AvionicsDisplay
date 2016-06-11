@@ -2075,7 +2075,6 @@ class PFD_Guage(object):
 				glPopMatrix()
 					
 			def draw(self, x,y, aircraft, declutter):
-				
 				radius = 145
 				glPushMatrix()
 				glTranslate(x,y,0.0)
@@ -2092,163 +2091,9 @@ class PFD_Guage(object):
 					self.heading_bug(radius, aircraft.HSI, aircraft.frame_time)
 					glDisable(GL_SCISSOR_TEST)
 					self.Nav_text(aircraft.NAV.active, -240, 80)
-				
-
 				glPopMatrix()
 	
-	class FMA_Guage(object):
-		#Flight Mode Annuciator
-		
-		class FMA_disp(object):
-			def __init__(self):
-				self.flash_time = 0.0
-				self.on = True
-				self.flash_count = 0
-				self.text = ""
-				self.end_arrow = 0 #Used to draw arrow at end of text for VS.
-				
-				
-			def check_change(self, AP_on, FD_on): #Used for autopilot status display only
-				if AP_on != self.AP_prev:
-					self.AP_prev = AP_on
-					self.flash()
-				elif FD_on != self.FD_prev:
-					self.FD_prev = FD_on
-					self.flash()
-					
-			def check_flash(self):
-				if self.flash_count > 0: #If 0 do not flash
-				
-					if globaltime.value - self.flash_time >= 0.5:
-						if self.on == True: 
-							self.on = False
 
-						else: 
-							self.on = True
-							self.flash_count -= 1 
-						self.flash_time = globaltime.value
-						
-			def flash(self): #Causes it to flash 5 times
-				self.flash_count = 5
-				self.flash_time = globaltime.value
-				self.flash_on = False
-									
-			def draw_AP_status(self, AP_on, FD_on):
-				
-				def draw_arrow(loc, h, w, arrow_h, dir):
-					#Note scale is still 0.14 here
-					glBegin(GL_LINES)
-					#Draw horizontal line
-					glVertex2f(h, loc)
-					glVertex2f(0, loc)
-					if dir == 1:
-						point_x = h
-					else:
-						point_x = 0
-					#Draw two arrow lines
-					h2 = arrow_h * dir
-					glVertex2f(point_x, loc)
-					glVertex2f(point_x - h2, loc + w)
-					glVertex2f(point_x, loc)
-					glVertex2f(point_x - h2, loc - w)
-										
-					glEnd()
-					
-				self.check_change(AP_on, FD_on)
-				self.check_flash()
-				if self.on:
-					glPushMatrix()
-					glScalef(0.14, 0.14, 1)
-					#Note AP_prev and FD_prev will always equal actual FD and AP status here.
-					# Due to self.check_change being called above.
-					if self.AP_prev: 
-						glText("AP", 100)
-					else:
-						glText("  ", 100)
-					if self.FD_prev: #If there is an arrow draw it 1 is up error -1 is down error
-							draw_arrow(55, 140, 50, 60, -1)
-					glPopMatrix()
-				
-			def draw(self):
-				
-				def draw_arrow(loc, h, w, arrow_h, dir):
-					#Note scale is still 0.14 here
-					glBegin(GL_LINES)
-					#Draw vertical line
-					glVertex2f(loc, h)
-					glVertex2f(loc,0)
-					if dir == 1:
-						point_y = h
-					else:
-						point_y = 0
-					#Draw two arrow lines
-					h2 = arrow_h * dir
-					glVertex2f(loc, point_y)
-					glVertex2f(loc + w, point_y - h2)
-					glVertex2f(loc, point_y)
-					glVertex2f(loc - w, point_y - h2)
-										
-					glEnd()
-					
-				self.check_flash()
-				#Standard text, except a 'u' or 'd' is used to draw an up or down arrow.
-				if self.on:
-					glPushMatrix()
-					glScalef(0.14, 0.14, 1)
-					glText(self.text, 100)
-					if self.end_arrow != 0: #If there is an arrow draw it 1 is up error -1 is down error
-							draw_arrow(85, 130, 50, 60, self.end_arrow)
-					glPopMatrix()
-				
-				
-		def __init__(self):
-			self.LNav_act = self.FMA_disp()
-			self.VNav_act = self.FMA_disp()
-			self.LNav_arm = self.FMA_disp()
-			self.VNav_arm = self.FMA_disp()
-			self.AP_status_disp  =  self.FMA_disp()
-			self.AP_status_disp.AP_prev = False
-			self.AP_status_disp.FD_prev = False
-			
-		def FMA_text(self, text):
-			glPushMatrix()
-			glScalef(0.14, 0.14, 1)
-			glText(text, 100)
-			glPopMatrix()
-			
-		
-		def draw_blue_vert_line(self, x, y0, y1):
-			glBegin(GL_LINES)
-			glVertex2f(x, y0)
-			glVertex2f(x, y1)
-			glEnd()
-			
-		def draw(self, x,y, aircraft):
-			y_dis = 25 #Vertical distance between text
-			x_dis = 117
-			
-			glPushMatrix()
-			glTranslatef(x,y,0.0)
-			glColor(cyan)
-			glLineWidth(3.0)
-			self.draw_blue_vert_line(x_dis - 5, 18, -25)
-			glLineWidth(2.0)
-			glColor(green)
-			self.LNav_act.draw()
-			glTranslatef(0, -y_dis, 0.0) #Move down 
-			self.VNav_act.draw()
-			glTranslatef(x_dis, y_dis, 0.0) #Move up and left
-			glColor(white)
-			self.LNav_arm.draw()
-			glTranslatef(0, -y_dis, 0.0) #move down
-			self.VNav_arm.draw()
-			#Draw just below on Attitude indicator AP / FD status (i.e. AP <--)
-			glTranslatef(-x_dis+ 22 , -25, 0.0)
-			#self.AP_status_disp.draw_AP_status(aircraft.AP.AP_on, aircraft.AP.FD_on)
-			glPopMatrix()
-			
-		
-#Start of PFD_mod main
 	def __init__(self):
 		self.name = "PFD"
 		self.speed = self.Speed_Guage()
@@ -2256,19 +2101,9 @@ class PFD_Guage(object):
 		self.alt_g = self.Alt_Guage()
 		self.HSI = self.HSI_Guage()
 		self.VSI = self.VSI_Guage()
-		self.FMA = self.FMA_Guage()
+		#self.FMA = self.FMA_Guage()
 		
 	def draw(self,aircraft,x,y): #x,y is the xy cordinates of center of PFD guage
-		#self.test = aircraft.altimeter_c()
-		#d = aircraft.get_PFD_data()
-		#d = aircraft.PFD_pickle.pickle_string()
-		#d = aircraft.EICAS_pickle.pickle_string()
-		
-		#print len(d)
-		#print "%r" %d
-		#self.test = pickle.loads(d)
-		#print self.test.attitude.bank.value
-		
 		y+=445 #Fine tune position
 		x-=6
 		declutter = aircraft.declutter.active
@@ -2281,8 +2116,6 @@ class PFD_Guage(object):
 		self.alt_g.draw(aircraft.altimeter, x + 155, y - 150, aircraft.frame_time, declutter)
 		#print "HSI", time.time()
 		self.HSI.draw(x, y-330, aircraft, declutter) #Just send the whole aircraft object, as lot of data drawn on HSI
-		#print "VSI", time.time()
 		self.VSI.draw(x+ 240, y-305, 70, aircraft.VSI.value)
-		self.FMA.draw(x - 175, y +175, aircraft)
 		
 		

@@ -29,7 +29,15 @@ class event_obj(object):
 		
 class EICAS_pickle_c(object):
 	def __init__(self, aircraft):
+		#self.attitude = aircraft.attitude
 		self.list = [aircraft.Eng_1, aircraft.Eng_2]
+			
+		#self.Eng_1 = aircraft.Eng_1
+		#self.Eng_2 = aircraft.Eng_2
+		
+	#def pickle_string(self):
+	#	return pickle.dumps(self, -1)
+	
 	
 	def pickle_string(self):
 		l = []
@@ -39,8 +47,8 @@ class EICAS_pickle_c(object):
 	
 	
 class Engine_constants(object):
-    
-	def __init__(self):		
+	def __init__(self):
+		
 		#N1 Overspeed
 		self.N1_Overspeed = 98.6
 		#N2 Overspeed
@@ -57,7 +65,11 @@ class Engine_constants(object):
 		self.FANVIB_Yellow = 2.4
 
 class show_GEARFLAP_c(object):
-
+		#Timer for flap and Gear guages.
+		#--- If these conditions are met for 30 sec, flap and gear not displayed.
+		#   1) Gear Up and Locked
+		#   2) Flaps up
+		#   3) Brake Temp Normal
 		def __init__(self):
 			self.show = True
 			self.time = 0
@@ -72,12 +84,12 @@ class show_GEARFLAP_c(object):
 				self.time = globaltime
 				self.show = True
 			
-   
 class showFANVIB_c(object):
 		#Class determins if Vibration or OilPressure guages displayed.
 	def __init__(self):
 		self.show = False
 		self.timer = 0
+		
 		
 	def comp(self, Eng1, Eng2, onground, globaltime):
 		#Uses Eng1 and Eng2 data to determine to show FanVIB or not.
@@ -106,9 +118,7 @@ class showFANVIB_c(object):
 			if (globaltime - self.timer) < 2.0:
 				self.show = False 
 			
-   
 class Trim_c(object):
-    
 	def __init__(self):
 		self.Aileron = data_obj(0)
 		self.Elevator = data_obj(0)
@@ -131,12 +141,12 @@ class Trim_c(object):
 		else:
 			self.needles_green = False
 		
-  
 class APU_c(object):
 	
 	def random_EGT_temp(self):
 			#From 520 to 580
 			self.EGT_temp = int(random.random() * 60 + 520)
+		
 		
 	def __init__(self):
 		self.RPM = data_obj(100.0)
@@ -169,8 +179,8 @@ class APU_c(object):
 			self.shutdown_time = curr_time
 		else: #Not Running
 			if curr_time - self.shutdown_time > 60: #60 second delay after shutdown guage hidden.
-				self.display = False
-				
+				self.display = False				
+		
 
 class Brakes_c(object):
 	#The overall brake system.
