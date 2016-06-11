@@ -90,7 +90,6 @@ class showFANVIB_c(object):
 		self.show = False
 		self.timer = 0
 		
-		
 	def comp(self, Eng1, Eng2, onground, globaltime):
 		#Uses Eng1 and Eng2 data to determine to show FanVIB or not.
 		#Logic -- Fan Vibration appears if both engines have reached 55% N2 + 2 seconds, and oil pressure is above 24psi.

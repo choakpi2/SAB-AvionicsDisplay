@@ -22,14 +22,12 @@ class data(object):
         self.count = 0
         self.comp_time = 0.0 #Used for timer for comp_second function.
         self.quit_flag = False #If True then RJGlass will exit
-        self.attitude = attitude_c()
-  
-        self.declutter = declutter_c()
-        self.airspeed = airspeed_c()
+
         self.aileron_pos= data_obj(0)
         self.elev_trim = data_obj(0)
         self.ias_bug = 220 #Integer
-        self.altimeter = altimeter_c()
+
+        #From EICAS_data
         self.flaps = flaps_c()
         self.fuel = fuel_c()
         self.gear = Gear_c()
@@ -39,23 +37,29 @@ class data(object):
         self.onground = data_obj(1)
         self.total_weight = data_obj(0)
         self.OAT = data_obj(25.0)
+        self.Eng_1 = Engine_c(1)
+        self.Eng_2 = Engine_c(2)
+        
+        #From PFDND_data
+        self.attitude = attitude_c()
         self.HSI = HSI_c()
         self.NAV = NAV_c()
         self.ND = ND_c()
         self.VSI = data_obj(-800)
-        
-        self.Eng_1 = Engine_c(1)
-        self.Eng_2 = Engine_c(2)
+        self.altimeter = altimeter_c()
+        self.declutter = declutter_c()
+        self.airspeed = airspeed_c()
 
-        self.TEST = event_obj(32000)
-        self.TEST4 = data_obj(100)
-        self.TEST2 = event_obj(100)
+
         self.Latitude = data_obj(math.radians(32.36))
         self.Longitude = data_obj(math.radians(-91.7))
+        
+        #PICKLE        
         self.PFD_pickle = PFD_pickle_c(self)
         self.EICAS_pickle = EICAS_pickle_c(self)
-        self.clock = time.time() 
         
+        
+        self.clock = time.time() 
         self.count2 = 0 #counter used to determine clock cycle
         self.frame_time = 0.01 #Time between frames. 1 / frame_time = FPS (frames per second)
         self.nodata = False
