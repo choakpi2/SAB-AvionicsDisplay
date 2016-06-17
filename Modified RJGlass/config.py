@@ -21,15 +21,10 @@ window_x = 1024
 #Y resolution of window
 window_y = 1024
 #Full screen
-full_screen= True
+full_screen= False
 
 #Set Mode of program
 mode = TEST #Note: case sensitive
-
-addr = '192.168.1.40'  #IP Address of computer running FSX.
-port = 1500
-server_port = 4000
-timeout = 5.0  #Number of seconds before Connection to FSX will timeout
 
 #Data directory name (The name of the folder where navdata is stored)
 data_directory = "data"

@@ -151,7 +151,7 @@ class data(object):
                     self.airspeed.maxspeed = config.Gear_speed_limit
         self.ND.dis_traveled.calc(self.Latitude.value, self.Longitude.value)
     
-    def get_mode_func(self, mode, right_screen, left_screen):
+    def get_mode_func(self, mode, screen):
         if mode==config.TEST: 
             mode_func = self.test
         else:

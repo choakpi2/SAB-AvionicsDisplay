@@ -73,9 +73,6 @@ def InitView(smooth, width, heigth):
 		#glBlendFunc(GL_SRC_ALPHA, GL_ZERO)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 		glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE)
-		#glDisable(GL_DEPTH_TEST)
-	#Clear Screen
-	#glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 	
 	
 def DisplaySplash(filename, delay, window_x, window_y):
@@ -91,16 +88,8 @@ def DisplaySplash(filename, delay, window_x, window_y):
 	time.sleep(delay)
 	
 
-def DrawWindow(left_screen, right_screen):
+def DrawWindow(left_screen):
 	
-	def divider(): #Dividing vertical white line between instruments
-		glColor(black)
-		glLineWidth(2.0)
-		glBegin(GL_LINES)
-		glVertex2f(512.0, 0.0)
-		glVertex2f(512.0, 768.0)
-		glEnd()
-		
 	def draw_nodata(x,y): #Draw no data text on screen.
 		glColor(red)
 		glLineWidth(5.0)
@@ -111,15 +100,13 @@ def DrawWindow(left_screen, right_screen):
 		glPopMatrix()
 		
 	global count
-	divider()
 	left_screen.draw(aircraft_data)
-	right_screen.draw(aircraft_data)
+	#right_screen.draw(aircraft_data)
 	glDisable(GL_SCISSOR_TEST) #Disable any scissoring.
 	draw_FPS(20,740, aircraft_data.frame_time)
 	#If Nodata is coming from Flight Sim, show on screen
 	if aircraft_data.nodata:
 		draw_nodata(50,500)
-		
 	count = count +1 #Used for FPS calc
 	
 	
@@ -130,14 +117,13 @@ def main(mode):
 	
 	# Start Event Processing Engine	
 	starttime = time.time() # Used for FPS (Frame Per Second) Calculation
-	left_screen = screen_c(256, [PFD])
-	right_screen = screen_c(512+256, [EICAS1])
+	screen = screen_c(512, [PFD,EICAS1])
 	
 	#Set up correct function for selected mode
-	mode_func = aircraft_data.get_mode_func(mode, left_screen, right_screen)
+	mode_func = aircraft_data.get_mode_func(mode, screen)
      
 	#SETUP KEYBOARD
-	keys = keyboard.keylist(aircraft_data, right_screen, left_screen)
+	keys = keyboard.keylist(aircraft_data, screen)
 	
 	#LOAD GUAGE TEXTURES
 	EICAS1.load_texture()
@@ -151,7 +137,7 @@ def main(mode):
            globaltime.update(time.time())
   
            #DRAW WINDOW
-           DrawWindow(left_screen, right_screen)
+           DrawWindow(screen)
   
            #UPDATE SCREEN
            pygame.display.flip()

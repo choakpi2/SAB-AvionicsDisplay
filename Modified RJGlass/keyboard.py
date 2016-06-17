@@ -9,12 +9,11 @@ SHIFT = 3
 
 class keylist(object):
 	
-	def __init__(self, aircraft, right_screen, left_screen):
+	def __init__(self, aircraft, screen):
 		self.keydown = False #Used for status of sticky keys
-		self.setup_lists(aircraft, right_screen, left_screen) #Load in all keybindings
+		self.setup_lists(aircraft, screen) #Load in all keybindings
 		self.mousedown = False
-		self.right_screen = right_screen
-		self.left_screen = left_screen
+		self.screen = screen
 		self.aircraft = aircraft
 		
 	def check_events(self,events, globaltime):
@@ -67,7 +66,7 @@ class keylist(object):
 					
 	
 	#Set up association with keys and function upon a keydown event	
-	def setup_lists(self, aircraft, right_screen, left_screen):
+	def setup_lists(self, aircraft, screen):
 	#	global key_list, key_list_ctrl, key_list_alt, key_list_shift
 		#key_list = [[K_b, aircraft.ND.range.down], [K_v, aircraft.ND.range.up]]
 		
@@ -134,8 +133,6 @@ class keylist(object):
 		add_key(K_b, aircraft.altimeter.inc_setting, SHIFT, True)
 		add_key(K_b, aircraft.altimeter.dec_setting, CTRL, True)
 
-		#Cycle the right and left screen
-		add_key(K_RIGHTBRACKET, right_screen.cycle, None)
-		add_key(K_RIGHTBRACKET, right_screen.cycle_reverse, SHIFT)
-		add_key(K_LEFTBRACKET, left_screen.cycle, None)
-		add_key(K_LEFTBRACKET, left_screen.cycle_reverse, SHIFT)
+		#Cycle the screen
+		add_key(K_RIGHTBRACKET, screen.cycle, None)
+		add_key(K_RIGHTBRACKET, screen.cycle_reverse, SHIFT)
