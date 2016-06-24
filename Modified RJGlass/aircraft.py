@@ -1,6 +1,5 @@
 import time
 import config
-from guage import *
 import math
 import sounds
 import pickle
@@ -46,14 +45,12 @@ class data(object):
         self.declutter = declutter_c()
         self.airspeed = airspeed_c()
 
-
         self.Latitude = data_obj(math.radians(32.36))
         self.Longitude = data_obj(math.radians(-91.7))
         
         #PICKLE        
         self.PFD_pickle = PFD_pickle_c(self)
         self.EICAS_pickle = EICAS_pickle_c(self)
-        
         
         self.clock = time.time() 
         self.count2 = 0 #counter used to determine clock cycle
@@ -151,13 +148,6 @@ class data(object):
                     self.airspeed.maxspeed = config.Gear_speed_limit
         self.ND.dis_traveled.calc(self.Latitude.value, self.Longitude.value)
     
-    def get_mode_func(self, mode, screen):
-        if mode==config.TEST: 
-            mode_func = self.test
-        else:
-            print "ERROR: Mode in config file is not defined"
-        return mode_func
-
     def test(self):
         self.attitude.bank.value += 0.0005
         self.attitude.pitch.value += 0.005

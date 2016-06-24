@@ -103,7 +103,7 @@ def DrawWindow(left_screen):
 	left_screen.draw(aircraft_data)
 	#right_screen.draw(aircraft_data)
 	glDisable(GL_SCISSOR_TEST) #Disable any scissoring.
-	draw_FPS(20,740, aircraft_data.frame_time)
+	draw_FPS(512,740, aircraft_data.frame_time)
 	#If Nodata is coming from Flight Sim, show on screen
 	if aircraft_data.nodata:
 		draw_nodata(50,500)
@@ -119,9 +119,6 @@ def main(mode):
 	starttime = time.time() # Used for FPS (Frame Per Second) Calculation
 	screen = screen_c(512, [PFD,EICAS1])
 	
-	#Set up correct function for selected mode
-	mode_func = aircraft_data.get_mode_func(mode, screen)
-     
 	#SETUP KEYBOARD
 	keys = keyboard.keylist(aircraft_data, screen)
 	
@@ -141,7 +138,7 @@ def main(mode):
   
            #UPDATE SCREEN
            pygame.display.flip()
-           mode_func() #Run aircraft mode function, to do all the calaculations etc.
+           aircraft_data.test()
 		
 		#CHECK KEYPRESS
            keys.check_events(pygame.event.get(), globaltime.value)		

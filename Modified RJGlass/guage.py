@@ -11,9 +11,9 @@ c_ADF = 1
 
 
 class datalogfile_c(object):
+    
 	def __init__(self):
 		self.active = False
-		
 	
 	def activate(self):
 		self.active = True
@@ -27,14 +27,18 @@ class datalogfile_c(object):
 		if self.active:
 			self.f.close()
 
+
 class globaltime_c(object): #Used to provide a global timer for timing features
+
 	def __init__(self):
 		self.value = time.time()
 		
 	def update(self, v): #Updated from RJGlass.py in main loop
 		self.value = v
 
+
 class globaltest_c(object): #Used for debugging and programming uses.
+
 	def __init__(self):
 		self.one = 0
 		self.two = 0
@@ -67,18 +71,21 @@ class globaltest_c(object): #Used for debugging and programming uses.
 		glText(s,100)
 		glPopMatrix()
 
+
 class scissor_c(object):
+    
 	def __init__(self, x, y, w, h):
 		self.x_o = self.x = x
 		self.y_o = self.y = y
 		self.w_o = self.w_o = w
 		self.h_o = self.h_o = h
+  
 	def set(self, x_scale, y_scale):
-		"Sets the scissor values depending on the scale given"
 		self.x = self.x_o * x_scale
 		self.y = self.y_o * y_scale
 		self.w_o = self.w_o * x_scale
 		self.h_o = self.h_o * y_scale
+
 
 class texture_image(object):
 	
@@ -94,8 +101,6 @@ class texture_image(object):
 		print self.true_w, self.true_h, self.w, self.h
 		if do_bind:
 			self.bind(self.tostring, self.w, self.h)
-		
-		
 		
 	def bind(self, tostring, w, h):
 		glEnable(GL_TEXTURE_2D)
@@ -141,8 +146,6 @@ class texture_image(object):
 
 		self.tostring = newstring
 	
-	
-
 	def draw(self, x,y):
 		glPushMatrix()
 		glTranslate(x,y,0)
@@ -158,9 +161,10 @@ class texture_image(object):
 		glDisable(GL_TEXTURE_2D)
 		glPopMatrix()
 
+
 class bitmap_image(object):
+    
 	def __init__(self, s): #s = surface
-		
 		self.w, self.h = s.get_size()
 		#print self.w, self.h
 		self.tostring = image.tostring(s, "RGBA", True)
@@ -170,7 +174,6 @@ def draw_FPS(x,y,frame_time):
 		value = 1. / frame_time
 	else:
 		value = 0
-		
 	glPushMatrix()
 	glColor(red)
 	glTranslatef(x,y,0)

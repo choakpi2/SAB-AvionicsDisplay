@@ -107,7 +107,6 @@ class PFD_Guage(object):
 					glText(s, 85.0)
 					glTranslatef(-20, 0, 0.0) #Move dashes left a little for apperance
 					glText('---', 110.0)
-					
 				glPopMatrix()
 				glPopMatrix()
 		
@@ -785,6 +784,7 @@ class PFD_Guage(object):
 				glVertex2f(w, 0.0)
 				glVertex2f(0.0, h)
 				glEnd()
+    
 			w = 10
 			lines_offset = 50
 			lines_h = w 

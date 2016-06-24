@@ -1,4 +1,3 @@
-from guage import *
 import formula
 import pickle
 
@@ -231,6 +230,7 @@ class HSI_c(object):
 class NAV_c(object):
 
     class VOR_c(object):
+        
         def __init__(self,name):
             self.OBS = data_obj(330)
             self.CDI = data_obj(-27)
@@ -248,6 +248,7 @@ class NAV_c(object):
             self.active = data_obj(-1)
 
     class ADF_c(object):
+        
         def __init__(self,name):
             self.radial = data_obj(100)
             self.active = data_obj(True)
