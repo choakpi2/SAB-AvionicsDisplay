@@ -2045,7 +2045,7 @@ class PFD_Guage(object):
 					glTranslatef(-8, -0.2,0) #Move to appropriate place
 					glPushMatrix()
 					glScalef(0.13, 0.13, 1)
-#					if value<100: #Do not draw tenths digit if over 100
+
 					glText(s, 140)
 					if s != "---": #if --- then no need for NM text
 						glText("NM", 90)
