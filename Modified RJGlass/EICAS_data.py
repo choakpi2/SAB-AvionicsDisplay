@@ -3,179 +3,178 @@ import pickle
 import random
 
 try:
-	import config
+        import config
 except ImportError:
-	# We're in a py2exe, so we'll append an element to the (one element) 
-	# sys.path which points to Library.zip, to the directory that contains 
-	# Library.zip, allowing us to import config.py
-	# Adds one level up from the Library.zip directory to the path, so import will go forward
-	sys.path.append(os.path.split(sys.path[0])[0])
-	import config
+        # We're in a py2exe, so we'll append an element to the (one element) 
+        # sys.path which points to Library.zip, to the directory that contains 
+        # Library.zip, allowing us to import config.py
+        # Adds one level up from the Library.zip directory to the path, so import will go forward
+        sys.path.append(os.path.split(sys.path[0])[0])
+        import config
 
 
+class data_obj(object):  # Used to make a object for Definition to link to
+
+        def __init__(self, value):
+                self.value = value
+                self.adjusted = value  # Used incase value needs to be adjusted from data inputed from FSX.
 
 
-class data_obj(object): #Used to make a object for Definition to link to
+class event_obj(object):  # Used to hold send event, with its data
 
-	def __init__(self, value):
-		self.value = value
-		self.adjusted = value #Used incase value needs to be adjusted from data inputed from FSX.
+        def __init__(self, value):
+                self.value = value
+                self.event_id = 0  # Set for 0 initially, will be equal to index of event list for this object
+                self.update = False  # Can be used  to tell when to update data to FSX.
 
 
-class event_obj(object): #Used to hold send event, with its data
-
-	def __init__(self,value):
-		self.value = value
-		self.event_id = 0 #Set for 0 initially, will be equal to index of event list for this object
-		self.update = False #Can be used  to tell when to update data to FSX.
-
-		
 class EICAS_pickle_c(object):
 
-	def __init__(self, aircraft):
-		self.list = [aircraft.Eng_1, aircraft.Eng_2]
-	
-	def pickle_string(self):
-		l = []
-		for i in self.list:
-			l.append(i.encode())
-		return pickle.dumps(l, True)
-	
-	
+        def __init__(self, aircraft):
+                self.list = [aircraft.Eng_1, aircraft.Eng_2]
+
+        def pickle_string(self):
+                l = []
+                for i in self.list:
+                        l.append(i.encode())
+                return pickle.dumps(l, True)
+
+
 class Engine_constants(object):
 
-	def __init__(self):
-		self.N1_Overspeed = 98.6
-		self.N2_Overspeed = 99.3
-		self.ITT_OverTemp = 900
-		self.OilTemp_Red = 163
-		self.OilTemp_Amber = 150
-		self.OilPres_Red = 25
-		self.OilPres_Amber = 115
-		self.FANVIB_Yellow = 2.4
+        def __init__(self):
+                self.N1_Overspeed = 98.6
+                self.N2_Overspeed = 99.3
+                self.ITT_OverTemp = 900
+                self.OilTemp_Red = 163
+                self.OilTemp_Amber = 150
+                self.OilPres_Red = 25
+                self.OilPres_Amber = 115
+                self.FANVIB_Yellow = 2.4
 
 
 class show_GEARFLAP_c(object):
-		#Timer for flap and Gear guages.
-		#--- If these conditions are met for 30 sec, flap and gear not displayed.
-		#   1) Gear Up and Locked
-		#   2) Flaps up
-		#   3) Brake Temp Normal
-		def __init__(self):
-			self.show = True
-			self.time = 0
-			self.max_time = 30
-			
-		def comp(self, flaps, gear_up, brakes_normal, globaltime):			
-			if (flaps.pos.value == 0.0) & (gear_up== True) & (brakes_normal == True):
-				if (globaltime - self.time) > self.max_time:
-					self.show = False
-			else:
-				self.time = globaltime
-				self.show = True
-			
-class showFANVIB_c(object):
-		#Class determins if Vibration or OilPressure guages displayed.
-	def __init__(self):
-		self.show = False
-		self.timer = 0
-		
-	def comp(self, Eng1, Eng2, onground, globaltime):
-		#Uses Eng1 and Eng2 data to determine to show FanVIB or not.
-		#Logic -- Fan Vibration appears if both engines have reached 55% N2 + 2 seconds, and oil pressure is above 24psi.
-		#	Oil Pressure guage appears if low oil pressure in
-		#	During single engine operation on ground shows oil guages, in air shows Fan Vibration.
-		
-		#Check oil pressure
-		self.show = True #Assume not showing
-		if onground:
-			#If neither has low pressure and both running
-			if (Eng1.lowOil_Pressure) | (Eng2.lowOil_Pressure) | (not Eng1.running) | (not Eng2.running):
-				self.show = False
-		else: #In the air
-			if (Eng1.running) & (Eng1.lowOil_Pressure):
-				self.show = False
-			elif (Eng2.running) & (Eng2.lowOil_Pressure):
-				self.show = False
-			elif (not Eng1.running) & (not Eng2.running):
-				self.show = False
-					
-		# Check for time delay of 2 seconds in all cases
-		if self.show == False:
-			self.timer = globaltime #Reset 2 second timer. If VIB not shown
-		else: #check for 2 second delay
-			if (globaltime - self.timer) < 2.0:
-				self.show = False 
+                # Timer for flap and Gear guages.
+                # -- If these conditions are met for 30 sec, flap and gear not displayed.
+                #   1) Gear Up and Locked
+                #   2) Flaps up
+                #   3) Brake Temp Normal
+                def __init__(self):
+                        self.show = True
+                        self.time = 0
+                        self.max_time = 30
 
-			
+                def comp(self, flaps, gear_up, brakes_normal, globaltime):
+                        if (flaps.pos.value == 0.0) & (gear_up == True) & (brakes_normal == True):
+                                if (globaltime - self.time) > self.max_time:
+                                        self.show = False
+                        else:
+                                self.time = globaltime
+                                self.show = True
+
+
+class showFANVIB_c(object):
+                # Class determins if Vibration or OilPressure guages displayed.
+        def __init__(self):
+                self.show = False
+                self.timer = 0
+
+        def comp(self, Eng1, Eng2, onground, globaltime):
+                # Uses Eng1 and Eng2 data to determine to show FanVIB or not.
+                # Logic -- Fan Vibration appears if both engines have reached 55% N2 + 2 seconds, and oil pressure is above 24psi.
+                # Oil Pressure guage appears if low oil pressure in
+                # During single engine operation on ground shows oil guages, in air shows Fan Vibration.
+
+                # Check oil pressure
+                self.show = True  # Assume not showing
+                if onground:
+                        # If neither has low pressure and both running
+                        if (Eng1.lowOil_Pressure) | (Eng2.lowOil_Pressure) | (not Eng1.running) | (not Eng2.running):
+                                self.show = False
+                else:  # In the air
+                        if (Eng1.running) & (Eng1.lowOil_Pressure):
+                                self.show = False
+                        elif (Eng2.running) & (Eng2.lowOil_Pressure):
+                                self.show = False
+                        elif (not Eng1.running) & (not Eng2.running):
+                                self.show = False
+
+                # Check for time delay of 2 seconds in all cases
+                if self.show == False:
+                        self.timer = globaltime  # Reset 2 second timer. If VIB not shown
+                else:  # check for 2 second delay
+                        if (globaltime - self.timer) < 2.0:
+                                self.show = False
+
+
 class Trim_c(object):
 
-	def __init__(self):
-		self.Aileron = data_obj(0)
-		self.Elevator = data_obj(0)
-		self.Rudder = data_obj(0)
-		self.needles_green = False
-		self.elevator_green = False
-		
-	def comp(self, onground):
-		#Check to see if Elevator is within Green 3 - 9
-		if 3 <= self.Elevator.value <= 9:
-			self.elevator_green = True
-		else:
-			self.elevator_green = False
-		
-		#Check to see if Needles should be green.
-		# --- Airplane On Ground, Rudder and Aileron Trim set at 0
-		if (onground.value) & (abs(self.Aileron.value) < 0.02) & (abs(self.Rudder.value) < 0.02) & (self.elevator_green):
-			self.needles_green = True
-		else:
-			self.needles_green = False
+        def __init__(self):
+                self.Aileron = data_obj(0)
+                self.Elevator = data_obj(0)
+                self.Rudder = data_obj(0)
+                self.needles_green = False
+                self.elevator_green = False
 
-		
+        def comp(self, onground):
+                # Check to see if Elevator is within Green 3 - 9
+                if 3 <= self.Elevator.value <= 9:
+                        self.elevator_green = True
+                else:
+                        self.elevator_green = False
+
+                # Check to see if Needles should be green.
+                # --- Airplane On Ground, Rudder and Aileron Trim set at 0
+                if (onground.value) & (abs(self.Aileron.value) < 0.02) & (abs(self.Rudder.value) < 0.02) & (self.elevator_green):
+                        self.needles_green = True
+                else:
+                        self.needles_green = False
+
+
 class APU_c(object):
-	
-	def random_EGT_temp(self):
-			#From 520 to 580
-			self.EGT_temp = int(random.random() * 60 + 520)
-				
-	def __init__(self):
-		self.RPM = data_obj(100.0)
-		self.EGT = 0
-		self.display = False
-		self.shutdown_time = 0
-		self.random_EGT_temp() # Pick a random EGT temp
-		self.count = 0
-		
-	def calc_EGT(self, delta_t):
-		self.count += 1
-		if self.count > 2000:
-			self.count = 0
-			if (random.random() * 5) < 1:
-				self.random_EGT_temp()
-								
-		#Determing Temp
-		temp = self.RPM.value * self.EGT_temp / 100.0
-		if self.EGT > 520: 
-			rate = 0.01
-		else:
-			rate = 0.06
-		self.EGT += (temp-self.EGT) * delta_t * rate
-	
-	def comp(self, delta_t, curr_time):
-		self.calc_EGT(delta_t)
-				
-		if self.RPM.value > 1: #Running
-			self.display = True
-			self.shutdown_time = curr_time
-		else: #Not Running
-			if curr_time - self.shutdown_time > 60: #60 second delay after shutdown guage hidden.
-				self.display = False				
-		
+
+        def random_EGT_temp(self):
+                # From 520 to 580
+                self.EGT_temp = int(random.random() * 60 + 520)
+
+        def __init__(self):
+                self.RPM = data_obj(100.0)
+                self.EGT = 0
+                self.display = False
+                self.shutdown_time = 0
+                self.random_EGT_temp()  # Pick a random EGT temp
+                self.count = 0
+
+        def calc_EGT(self, delta_t):
+                self.count += 1
+                if self.count > 2000:
+                        self.count = 0
+                        if (random.random() * 5) < 1:
+                                self.random_EGT_temp()
+
+                # Determing Temp
+                temp = self.RPM.value * self.EGT_temp / 100.0
+                if self.EGT > 520:
+                        rate = 0.01
+                else:
+                        rate = 0.06
+                self.EGT += (temp-self.EGT) * delta_t * rate
+
+        def comp(self, delta_t, curr_time):
+                self.calc_EGT(delta_t)
+
+                if self.RPM.value > 1:  # Running
+                        self.display = True
+                        self.shutdown_time = curr_time
+                else:  # Not Running
+                        if curr_time - self.shutdown_time > 60:  # 60 second delay after shutdown guage hidden.
+                                self.display = False
+
 
 class Brakes_c(object):
-	#The overall brake system.
-	#Consists of 4 temperature sensors (one on each main brake)
-	#-- Flag if one of the sensors has overheated.
+        # The overall brake system.
+        # Consists of 4 temperature sensors (one on each main brake)
+        # -- Flag if one of the sensors has overheated.
 	
 	class Temp_Sensor(object):
 		#The temperature sensor on each wheel. 
