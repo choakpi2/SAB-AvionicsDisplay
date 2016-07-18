@@ -3,7 +3,6 @@ import pickle
 
 
 class data_obj(object):  # Used to make a object for Definition to link to
-
     def __init__(self, value):
         self.value = value
         self.adjusted = value  # Used incase value needs to be adjusted from data inputed from FSX.

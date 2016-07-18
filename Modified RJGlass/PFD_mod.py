@@ -16,7 +16,7 @@ except ImportError:
 
 from guage import *  # All add on guage functions colors etc.
 
-# class scissor(
+
 class PFD_Guage(object):
 
     class Speed_Guage:
@@ -35,12 +35,12 @@ class PFD_Guage(object):
             glLineWidth(2.0)
             glBegin(GL_LINE_LOOP)
             glVertex2f(point, y)
-            glVertex2f(point + w, y -h)
-            glVertex2f(point + w, y +h)
+            glVertex2f(point + w, y - h)
+            glVertex2f(point + w, y + h)
             glEnd()
             glBegin(GL_LINES)
-            glVertex2f(point +w, y)
-            glVertex2f(point +w + 12.0, y)
+            glVertex2f(point + w, y)
+            glVertex2f(point + w + 12.0, y)
             glEnd()
 
         def airspeed_diff(self, difference):
@@ -59,7 +59,7 @@ class PFD_Guage(object):
                 glEnd()
 
         def V_Speeds(self, air_spd, text_y):
-            space = 30.0
+
             def V_Text(Vspeed, x, y):
                 if Vspeed.visible:
                     glPushMatrix()
@@ -70,8 +70,9 @@ class PFD_Guage(object):
                     glText(s, 85.0)
                     glPopMatrix()
                     glPopMatrix()
-            glColor(cyan)
 
+            space = 30.0
+            glColor(cyan)
             # VT
             V_Text(air_spd.VT, 5.0, text_y)
             text_y -= space
@@ -89,7 +90,7 @@ class PFD_Guage(object):
             # After done reset color to white
             glColor(white)
 
-        def Vspeed_selection(self, Vspeed, offtime, x , y):
+        def Vspeed_selection(self, Vspeed, offtime, x, y):
             if globaltime.value <= offtime:
                 s = Vspeed.text
                 # Draw text
@@ -97,7 +98,7 @@ class PFD_Guage(object):
                 glPushMatrix()
                 glTranslatef(x, y, 0.0)
                 glPushMatrix()
-                glScalef(0.15,0.15,1.0)
+                glScalef(0.15, 0.15, 1.0)
                 if Vspeed.visible:
                     s += str(Vspeed.value)
                     glText(s, 85.0)
@@ -134,17 +135,17 @@ class PFD_Guage(object):
                 glEnd()
                 num = abs((finish - start) // step) + 1
                 loc = start
-                i =0
-                d = step* dir
+                i = 0
+                d = step * dir
                 while i <= num:
-                    i+=1
+                    i += 1
                     glBegin(GL_POLYGON)
                     glVertex2f(x1, loc)
                     glVertex2f(x2, loc)
-                    loc+=d
-                    glVertex2f(x2,loc)
-                    glVertex2f(x1,loc)
-                    loc+=d
+                    loc += d
+                    glVertex2f(x2, loc)
+                    glVertex2f(x1, loc)
+                    loc += d
                     glEnd()
 
             unit_apart = self.knot_unit
@@ -153,12 +154,12 @@ class PFD_Guage(object):
             diff = air_spd.maxspeed - airspeed
             loc = diff * self.knot_unit
             if loc <= y_center:
-                    barber_pole(loc + y_center, 150 + y_center, 1)
+                barber_pole(loc + y_center, 150 + y_center, 1)
             # Begin under_speed
-            diff= air_spd.minspeed - airspeed
+            diff = air_spd.minspeed - airspeed
             loc = diff * self.knot_unit
             if loc >= -y_center:
-                    barber_pole(loc + y_center, -150 + y_center, -1)
+                barber_pole(loc + y_center, -150 + y_center, -1)
             # Begin low speed awareness cue
             diff = air_spd.lowspeed - airspeed
             loc = diff * self.knot_unit
@@ -184,19 +185,18 @@ class PFD_Guage(object):
             glBegin(GL_LINES)
             vert_line_bottom = -10
             for i in range(13):
-
                 if tick_ten == 4:
                     vert_line_bottom = loc
-                if tick_ten >=4: #This causes nothing below 40 to be displyed
+                if tick_ten >= 4:  # This causes nothing below 40 to be displyed
                     glVertex2f(center - 10.0, loc)
                     glVertex2f(center, loc)
-                    if tick_ten <20: #If its under 200 knots add a 5 knot mork
-                        mid_loc = loc + (unit_apart * 5) # This is equivelent of 5 knots higher
+                    if tick_ten < 20:  # If its under 200 knots add a 5 knot mork
+                        mid_loc = loc + (unit_apart * 5)  # This is equivelent of 5 knots higher
                         glVertex2f(center - 5.0, mid_loc)
                         glVertex2f(center, mid_loc)
-                tick_ten = tick_ten +1
+                tick_ten = tick_ten + 1
                 loc = loc + (unit_apart * 10)
-            #Draw verticle Line of airspeed tape
+            # Draw verticle Line of airspeed tape
             glVertex2f(center, vert_line_bottom)
             glVertex2f(center, 300.0)
             glEnd()
@@ -204,33 +204,31 @@ class PFD_Guage(object):
             loc = start_loc
             tick_ten = start_tick_ten
             glLineWidth(2.0)
-            for i in range(13):
-            # Put in numbers
-
+            for i in range(13):  # Put in numbers
                 if (tick_ten >=4) & (tick_ten % 2 == 0):  # Must be multiple of 20 and above 0 knots
                     # Print out number print
                     glPushMatrix()
-                    if tick_ten >=10:
+                    if tick_ten >= 10:
                         glTranslatef(8.0, loc - 6.0, 0.0)
-                        glScalef(0.13,0.13,1)  # Scale text, also done in else statement below.
+                        glScalef(0.13, 0.13, 1)  # Scale text, also done in else statement below.
                         c = (tick_ten / 10) + 48
                         glutStrokeCharacter(GLUT_STROKE_ROMAN, c)
                     else:
                         glTranslatef(18.0, loc - 6.0, 0.0)  # Move over since no hundreds digit
-                        glScalef(0.13,0.13,1)  # Don't forget to scale text
+                        glScalef(0.13, 0.13, 1)  # Don't forget to scale text
                     c = (tick_ten % 10) + 48
                     glutStrokeCharacter(GLUT_STROKE_ROMAN, c)  # Tens digit
                     glutStrokeCharacter(GLUT_STROKE_ROMAN, 48)  # Ones Digit
                     glPopMatrix()
                 elif (tick_ten == 3):  # Put in V Speed Text
                     self.V_Speeds(air_spd, loc - 12.0)
-                tick_ten = tick_ten +1
+                tick_ten = tick_ten + 1
                 loc = loc + (unit_apart * 10)
 
         def bug_polygon(self):
             glColor(purple)
             glBegin(GL_LINE_LOOP)
-            glVertex2f(0.0,0.0)
+            glVertex2f(0.0, 0.0)
             glVertex2f(10.0, 8.0)
             glVertex2f(10.0, 15.0)
             glVertex2f(0.0, 15.0)
@@ -245,9 +243,9 @@ class PFD_Guage(object):
             # Draw Text Part
             glPushMatrix()
             glTranslate(x, y, 0.0)
-            glScale(0.13,0.13,1.0)
+            glScale(0.13, 0.13, 1.0)
             glText("M", 100)
-            glText(("%3.3f" %value)[1:], 90)
+            glText(("%3.3f" % value)[1:], 90)
             glPopMatrix()
 
         def airspeed_bug_text(self, bug):  # Text on top
@@ -260,16 +258,15 @@ class PFD_Guage(object):
             # Draw Text Part
             glPushMatrix()
             glTranslate(30.0, -32.0, 0.0)
-            glScale(0.15,0.15,1.0)
+            glScale(0.15, 0.15, 1.0)
             glText(str(bug))
             glPopMatrix()
 
         def airspeed_bug(self, airspeed):  # Also speed on top
             glPushMatrix()
             bug_value = airspeed.bug.value
-            if bug_value <40:  # prevents bug from going below 40knot mark.
+            if bug_value < 40:  # prevents bug from going below 40knot mark.
                 bug_value = 40
-
             # Determine bugs position
             diff = bug_value - airspeed.IAS_guage
             # Determine translation amount
@@ -287,43 +284,41 @@ class PFD_Guage(object):
         def Vspeed_bug(self, air_spd):  # Puts in the blue marks on speed tape for V-Speeds
 
             def mark_bug(IAS, Vbug):
-
                 if Vbug.visible:
                     text = " " + Vbug.text[1]
                     #IAS current airspeed, bug is bug airspeed text is text to put next to mark
                     diff = (IAS - Vbug.value) * self.knot_unit
                     center = self.y_center
-                    noshow = center + 5.0 #If out of this range then don't show
+                    noshow = center + 5.0  # If out of this range then don't show
                     if abs(diff) <= noshow:
                         glPushMatrix()
-                        glTranslate(30.0, center - diff, 0.0) #Move to point of V speed bug
-                        #Draw Line
+                        glTranslate(30.0, center - diff, 0.0)  # Move to point of V speed bug
+                        # Draw Line
                         glBegin(GL_LINES)
-                        glVertex(0.0,0.0)
-                        glVertex(30.0,0.0)
+                        glVertex(0.0, 0.0)
+                        glVertex(30.0, 0.0)
                         glEnd()
-                        #Draw Text next to line 1,2,R,T
+                        # Draw Text next to line 1,2,R,T
                         glTranslate(32.0, -6.0, 0.0)
-                        glScalef(0.12,0.12,1.0)
+                        glScalef(0.12, 0.12, 1.0)
                         glText(text, 90)
                         glPopMatrix()
             glColor(cyan)
             glLineWidth(2.0)
-            mark_bug(air_spd.IAS_guage,air_spd.V1)
-            mark_bug(air_spd.IAS_guage,air_spd.V2)
-            mark_bug(air_spd.IAS_guage,air_spd.VR)
-            mark_bug(air_spd.IAS_guage,air_spd.VT)
-
+            mark_bug(air_spd.IAS_guage, air_spd.V1)
+            mark_bug(air_spd.IAS_guage, air_spd.V2)
+            mark_bug(air_spd.IAS_guage, air_spd.VR)
+            mark_bug(air_spd.IAS_guage, air_spd.VT)
 
         def draw(self, airspeed, onground, x, y, declutter):
-        #airspeed is in knots.
-        #CRJ - Airspped Guage
+        # airspeed is in knots.
+        # CRJ - Airspped Guage
         # Location 2,88 to 90,368
         # Start x,y point is top left corner of airspeed tape
             glPushMatrix()
             glTranslatef(x, y, 0.0)
             self.tick_marks(airspeed, x, y)  # Draw tick marks with numbers
-            if  not (onground | declutter):
+            if not (onground | declutter):
                 self.speed_cues(airspeed)  # If on ground don't display speed cues
             if airspeed.trend_visible:
                 self.airspeed_diff(airspeed.IAS_diff)
@@ -333,21 +328,20 @@ class PFD_Guage(object):
                 glDisable(GL_SCISSOR_TEST)
                 self.airspeed_bug(airspeed)
                 self.airspeed_bug_text(airspeed.bug.value)
-                if airspeed.Mach.active: self.airspeed_mach_text(airspeed.Mach.value, 5 , 300)
+                if airspeed.Mach.active:
+                    self.airspeed_mach_text(airspeed.Mach.value, 5, 300)
                 self.Vspeed_selection(airspeed.Vspeed_disp, airspeed.Vspeed_disp_timer, 5, -65)
             glPopMatrix()
 
     class Attitude_Guage:
-        def __init__(self): #Selects varient of Flight Director
+
+        def __init__(self):  # Selects varient of Flight Director
             if config.FD_Type == config.LINES: #Defaults to Inverted V
                 self.Flight_Director = self.Flight_Director_Lines
                 self.Center_Mark = self.Center_Mark_L
             else:
                 self.Flight_Director = self.Flight_Director_V
                 self.Center_Mark = self.Center_Mark_V
-
-    #def __init__(self):
-        #    scis = scissor_c(
 
         def Grnd_Sky(self):
             # Draw Ground and Sky & Horizon
@@ -358,9 +352,9 @@ class PFD_Guage(object):
             glVertex2f(250.0, 0.0)
             glVertex2f(-250.0, 0.0)
             glColor3f(0.0, 0.6, 0.8)  # Draw Blue Color
-            glVertex2f(250.0,0.0)
-            glVertex2f(-250.0,0.0)
-            glVertex2f(-250.0,800.0)
+            glVertex2f(250.0, 0.0)
+            glVertex2f(-250.0, 0.0)
+            glVertex2f(-250.0, 800.0)
             glVertex2f(250.0, 800.0)
             glEnd()
 
@@ -376,43 +370,43 @@ class PFD_Guage(object):
         def Pitch_Marks(self, pitch, line_width, pixel_per_degree, loc_active):
             def get_width(pitch):
                 x = int(round(pitch / 2.5))
-                if x==0:
-                    w = 0 #Horizon is now draw in Grnd_Sky()
+                if x == 0:
+                    w = 0  # Horizon is now draw in Grnd_Sky()
                 elif (x % 4) == 0:
                     w = 30
-                elif (x % 2) ==0:
+                elif (x % 2) == 0:
                     w = 15
                 else:
                     w = 5
                 return w
 
-            #Draw the pitch marks
-            #Uses pitch to determine which pitch lines need to be drawn
-            #pixel_per_degree = 7.25 Starts 12.5 degrees down and goes up 11 lines
+            # Draw the pitch marks
+            # Uses pitch to determine which pitch lines need to be drawn
+            # pixel_per_degree = 7.25 Starts 12.5 degrees down and goes up 11 lines
             start_point = 12.5
             num_lines = 11
             glColor(white)
-            glPushMatrix() #Save matrix state
+            glPushMatrix()  # Save matrix state
             glLineWidth(line_width)
-            #pitch = pitch * -1
-            #Round pitch to nearest 2.5 degrees
+            # pitch = pitch * -1
+            # Round pitch to nearest 2.5 degrees
             start = round(pitch / 2.5) * 2.5
-            start = start - start_point # Go down 25 degrees
+            start = start - start_point  # Go down 25 degrees
             glTranslatef(0.0, start * pixel_per_degree, 0.0)
             for i in range(num_lines):
                 w = get_width(start)
-                if w>0:
+                if w > 0:
                     glBegin(GL_LINES)
                     glVertex2f(-w, 0.0)
                     glVertex2f(w, 0.0)
                     glEnd()
-                if (w==30): #Draw number for degrees
+                if (w == 30):  # Draw number for degrees
                     c = int(round(abs(start))) / 10 + 48
-                    if (c>48): #If greater than 0
+                    if (c > 48):  # If greater than 0
                         glPushMatrix()
-                        glTranslatef(30.0, -6.0, 0.0) #Move over to right (Numbers only on right side)
+                        glTranslatef(30.0, -6.0, 0.0)  # Move over to right (Numbers only on right side)
                         glPushMatrix()
-                        glScalef(0.13, 0.13, 1.0) #Scale down for numbers
+                        glScalef(0.13, 0.13, 1.0)  # Scale down for numbers
                         glutStrokeCharacter(GLUT_STROKE_ROMAN, c)
                         glutStrokeCharacter(GLUT_STROKE_ROMAN, 48)
                         glPopMatrix()
@@ -421,7 +415,7 @@ class PFD_Guage(object):
                 start = start + 2.5
             glPopMatrix()
 
-        def Center_Mark_L(self): #This is one varent of the center mark (Boeing look) L shapes
+        def Center_Mark_L(self):  # This is one varent of the center mark (Boeing look) L shapes
             def Square(w):
                 glVertex2f(w, w)
                 glVertex2f(w, -w)
@@ -429,76 +423,76 @@ class PFD_Guage(object):
                 glVertex2f(-w, w)
 
             def L_Shape(side, w, h, l_w):
-                glVertex2f(-l_w* side,l_w)
-                glVertex2f((w + l_w)* side, l_w)
-                glVertex2f((w + l_w)* side, -l_w)
+                glVertex2f(-l_w * side, l_w)
+                glVertex2f((w + l_w) * side, l_w)
+                glVertex2f((w + l_w) * side, -l_w)
                 glVertex2f(l_w * side, -l_w)
                 glVertex2f(l_w * side, -l_w - h)
-                glVertex2f(-l_w * side, -l_w -h)
-                #glVertex2f(-l_w, l_w)
+                glVertex2f(-l_w * side, -l_w - h)
+                # glVertex2f(-l_w, l_w)
 
-            #Draws center dot and l shaped things off to the side
-            #glPushMatrix() No need to push, will do not translating
-            #Do black parts
+            # Draws center dot and l shaped things off to the side
+            # glPushMatrix() No need to push, will do not translating
+            # Do black parts
             glPushMatrix()
-            glColor3f(0.0,0.0,0.0) #Black
+            glColor3f(0.0, 0.0, 0.0)  # Black
             glBegin(GL_POLYGON)
             Square(5)
             glEnd()
             glTranslatef(45, 0, 0)
-            #Right L
+            # Right L
             glBegin(GL_POLYGON)
             L_Shape(1, 75, 25, 5)
             glEnd()
-            glTranslatef(-90, 0 ,0)
-            #Left L
+            glTranslatef(-90, 0, 0)
+            # Left L
             glBegin(GL_POLYGON)
             L_Shape(-1, 75, 25, 5)
             glEnd()
             glPopMatrix()
-            #Do white parts
+            # Do white parts
             glColor(white)
             glLineWidth(2.5)
             glPushMatrix()
             glBegin(GL_LINE_LOOP)
             Square(5)
             glEnd()
-            glTranslatef(45,0,0)
-            #Right L
+            glTranslatef(45, 0, 0)
+            # Right L
             glBegin(GL_LINE_LOOP)
             L_Shape(1, 75, 25, 5)
             glEnd()
-            #Left L
-            glTranslatef(-90,0,0)
+            # Left L
+            glTranslatef(-90, 0, 0)
             glBegin(GL_LINE_LOOP)
             L_Shape(-1, 75, 25, 5)
             glEnd()
             glPopMatrix()
 
-        def Center_Mark_V(self): #This is one varent of the center mark
+        def Center_Mark_V(self):  # This is one varent of the center mark
             def Rect(side):
                 glVertex2f(-side * 106.0, 2.0)
                 glVertex2f(-side * 106.0, -2.0)
-                glVertex2f(-side * 126.0 , -2.0)
+                glVertex2f(-side * 126.0, -2.0)
                 glVertex2f(-side * 126.0, 2.0)
 
             def V_Shape(side):
-                glVertex2f(0,0)
+                glVertex2f(0, 0)
                 glVertex2f(side * 40.0, -30.0)
                 glVertex2f(side * 80.0, -30.0)
 
-            #Draws center dot and l shaped things off to the side
-            #glPushMatrix() No need to push, will do not translating
-            #Do black parts
-            glColor3f(0.0,0.0,0.0)
+            # Draws center dot and l shaped things off to the side
+            # glPushMatrix() No need to push, will do not translating
+            # Do black parts
+            glColor3f(0.0, 0.0, 0.0)
             glBegin(GL_POLYGON)
             V_Shape(1)
             glEnd()
             glBegin(GL_POLYGON)
             V_Shape(-1)
             glEnd()
-            #Do white parts
-            glColor3f(1.0,1.0,1.0)
+            # Do white parts
+            glColor3f(1.0, 1.0, 1.0)
             glLineWidth(2.5)
             glBegin(GL_LINE_LOOP)
             V_Shape(1)
@@ -521,19 +515,21 @@ class PFD_Guage(object):
             #need scale factor
             FDpitch_diff = pitch - FDpitch
             FDbank_diff = bank - FDbank
-            #Limit Max of bank diff to 30 degrees
+            # Limit Max of bank diff to 30 degrees
             bank_limit = 30.0
             if FDbank_diff > bank_limit:
                 FDbank_diff = bank_limit
-            elif FDbank_diff <-bank_limit:
+            elif FDbank_diff < -bank_limit:
                 FDbank_diff = -bank_limit
-            #Limit Max pitch diff to 20 degrees
+            # Limit Max pitch diff to 20 degrees
             pitch_limit = 12.5
-            if FDpitch_diff > pitch_limit: FDpitch_diff = pitch_limit
-            elif FDpitch_diff <-pitch_limit: FDpitch_diff = -pitch_limit
-            pitch_scale = -100/ pitch_limit
+            if FDpitch_diff > pitch_limit:
+                FDpitch_diff = pitch_limit
+            elif FDpitch_diff < -pitch_limit:
+                FDpitch_diff = -pitch_limit
+            pitch_scale = -100 / pitch_limit
             bank_scale = -45 / bank_limit
-            #Scale distances to max for max deflection
+            # Scale distances to max for max deflection
             FDpitch_diff *= pitch_scale
             FDbank_diff *= bank_scale
             glColor(purple)
@@ -545,39 +541,39 @@ class PFD_Guage(object):
             glVertex2f(-FDbank_diff, -length)
             glEnd()
 
-        def Flight_Director_V(self, bank, FDbank, pitch, FDpitch): #Draw the flight director
+        def Flight_Director_V(self, bank, FDbank, pitch, FDpitch):  # Draw the flight director
             def draw_V(side):
                 glBegin(GL_LINE_STRIP)
-                glVertex2f(side* 10,-2) #Flight director stars offset from center
+                glVertex2f(side * 10,-2)  # Flight director stars offset from center
                 glVertex2f(side * 85, -32.0)
                 glVertex2f(side * 100, -22.0)
-                glVertex2f(side * 10,-2) #slope is 22/100
+                glVertex2f(side * 10, -2)  # slope is 22/100
                 glEnd()
                 glBegin(GL_LINE_STRIP)
-                glVertex2f(side* 100, -22.0)
-                glVertex2f(side* 100, -40.0)
-                glVertex2f(side* 85, -32.0)
+                glVertex2f(side * 100, -22.0)
+                glVertex2f(side * 100, -40.0)
+                glVertex2f(side * 85, -32.0)
                 glEnd()
             FDbank_diff = bank - FDbank
             FDpitch_diff = pitch - FDpitch
-            #FDbank_diff = - FDbank
-            #FDpitch_diff = - FDpitch
+            # FDbank_diff = - FDbank
+            # FDpitch_diff = - FDpitch
             pixel_per_degree = 7.25
-            #FDpitch_diff = pitch - FDpitch
-            #make sure pitch differeance isn't grater than 10 degrees, so FD always is visible
-            if FDpitch_diff>10:
+            # FDpitch_diff = pitch - FDpitch
+            # make sure pitch differeance isn't grater than 10 degrees, so FD always is visible
+            if FDpitch_diff > 10:
                 FDpitch_diff = 10
-            elif FDpitch_diff <-10:
+            elif FDpitch_diff < -10:
                 FDpitch_diff = -10
-
-            if FDbank_diff>30: FDbank_diff = 30
-            elif FDbank_diff <-30: FDbank_diff = -30
-
+            if FDbank_diff > 30:
+                FDbank_diff = 30
+            elif FDbank_diff < -30:
+                FDbank_diff = -30
             glPushMatrix()
             glRotate(-FDbank_diff, 0.0, 0.0, 1.0)
-            #glRotate(-FDbank, 0.0, 0.0, 1.0)
+            # glRotate(-FDbank, 0.0, 0.0, 1.0)
             glPushMatrix()
-            glTranslatef(0.0, (FDpitch_diff) * pixel_per_degree, 0.0) #Pitch)
+            glTranslatef(0.0, (FDpitch_diff) * pixel_per_degree, 0.0)  # Pitch
             glColor(purple)
             glLineWidth(3.0)
             draw_V(1)
@@ -585,20 +581,22 @@ class PFD_Guage(object):
             glPopMatrix()
             glPopMatrix()
 
-        def Static_Triangle(self): #Static Triangle and Marks on top of Atitude
-            radius = 120.0
-            glLineWidth(2.5)
+        def Static_Triangle(self):  # Static Triangle and Marks on top of Atitude
+            
             def bank_ticks(dir):
+
                 def short():
                     glBegin(GL_LINES)
                     glVertex2f(0.0, radius + 12.0)
                     glVertex2f(0.0, radius)
                     glEnd()
+
                 def long():
                     glBegin(GL_LINES)
                     glVertex2f(0.0, radius)
                     glVertex2f(0.0, radius + 25.0)
                     glEnd()
+
                 def triang():
                     size = 5.0
                     glBegin(GL_LINE_LOOP)
@@ -606,6 +604,7 @@ class PFD_Guage(object):
                     glVertex2f(size, radius + size * 2)
                     glVertex2f(-size, radius + size * 2)
                     glEnd()
+                    
                 glPushMatrix()
                 glRotatef(dir * 10.0, 0.0, 0.0, 1.0)
                 short()
@@ -618,7 +617,10 @@ class PFD_Guage(object):
                 glRotatef(dir * 15.0, 0.0, 0.0, 1.0)
                 long()
                 glPopMatrix()
-            #Draw Solid Triangle
+            
+            radius = 120.0
+            glLineWidth(2.5)
+            # Draw Solid Triangle
             glColor3f(1.0, 1.0, 1.0)
             size = 8.0
             glBegin(GL_LINE_LOOP)

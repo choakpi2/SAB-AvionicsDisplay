@@ -17,7 +17,7 @@ class keylist(object):
         self.aircraft = aircraft
 
     def check_events(self,events, globaltime):
-        #keys.check(pygame.event.get())
+        # keys.check(pygame.event.get())
         for event in events:
             #print event
             if event.type == KEYDOWN:
