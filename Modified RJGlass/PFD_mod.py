@@ -44,8 +44,10 @@ class PFD_Guage(object):
             glEnd()
 
         def airspeed_diff(self, difference):
-            # Pink Line above or below arrow that shoes accel or decel rate. Forcast 5 seconds ahead??
-            if abs(difference) > 1:  # If forcasted not difference is less than 2 knots then down't show
+            # Pink Line above or below arrow that shoes accel or decel rate.
+            # Forcast 5 seconds ahead??
+            # If forcasted not difference is less than 2 knots then down't show
+            if abs(difference) > 1:
                 y1 = self.y_center
                 y2 = y1 + difference * self.knot_unit
                 x1 = self.x_center + 18
@@ -117,8 +119,8 @@ class PFD_Guage(object):
                 glColor(green)
                 glLineWidth(2.0)
                 glBegin(GL_LINES)
-                glVertex2f(x1,y)
-                glVertex2f(x2,y)
+                glVertex2f(x1, y)
+                glVertex2f(x2, y)
                 glEnd()
 
             def barber_pole(start, finish, dir):
@@ -205,7 +207,7 @@ class PFD_Guage(object):
             tick_ten = start_tick_ten
             glLineWidth(2.0)
             for i in range(13):  # Put in numbers
-                if (tick_ten >=4) & (tick_ten % 2 == 0):  # Must be multiple of 20 and above 0 knots
+                if (tick_ten >= 4) & (tick_ten % 2 == 0):  # Must be multiple of 20 and above 0 knots
                     # Print out number print
                     glPushMatrix()
                     if tick_ten >= 10:
@@ -286,7 +288,7 @@ class PFD_Guage(object):
             def mark_bug(IAS, Vbug):
                 if Vbug.visible:
                     text = " " + Vbug.text[1]
-                    #IAS current airspeed, bug is bug airspeed text is text to put next to mark
+                    # IAS current airspeed, bug is bug airspeed text is text to put next to mark
                     diff = (IAS - Vbug.value) * self.knot_unit
                     center = self.y_center
                     noshow = center + 5.0  # If out of this range then don't show
@@ -311,10 +313,10 @@ class PFD_Guage(object):
             mark_bug(air_spd.IAS_guage, air_spd.VT)
 
         def draw(self, airspeed, onground, x, y, declutter):
-        # airspeed is in knots.
-        # CRJ - Airspped Guage
-        # Location 2,88 to 90,368
-        # Start x,y point is top left corner of airspeed tape
+            # airspeed is in knots.
+            # CRJ - Airspped Guage
+            # Location 2,88 to 90,368
+            # Start x,y point is top left corner of airspeed tape
             glPushMatrix()
             glTranslatef(x, y, 0.0)
             self.tick_marks(airspeed, x, y)  # Draw tick marks with numbers
@@ -368,6 +370,7 @@ class PFD_Guage(object):
             glEnd()
 
         def Pitch_Marks(self, pitch, line_width, pixel_per_degree, loc_active):
+
             def get_width(pitch):
                 x = int(round(pitch / 2.5))
                 if x == 0:
@@ -416,6 +419,7 @@ class PFD_Guage(object):
             glPopMatrix()
 
         def Center_Mark_L(self):  # This is one varent of the center mark (Boeing look) L shapes
+
             def Square(w):
                 glVertex2f(w, w)
                 glVertex2f(w, -w)
@@ -470,6 +474,7 @@ class PFD_Guage(object):
             glPopMatrix()
 
         def Center_Mark_V(self):  # This is one varent of the center mark
+
             def Rect(side):
                 glVertex2f(-side * 106.0, 2.0)
                 glVertex2f(-side * 106.0, -2.0)
@@ -510,7 +515,6 @@ class PFD_Guage(object):
 
         def Flight_Director_Lines(self, bank, FDbank, pitch,FDpitch): #Draw the flight director 2 Lines (Boeing style)
             #Note: bank and pitch not used, just used for placeholders, to have same arguments as other flight director varient
-
             length = 55
             #need scale factor
             FDpitch_diff = pitch - FDpitch
@@ -542,6 +546,7 @@ class PFD_Guage(object):
             glEnd()
 
         def Flight_Director_V(self, bank, FDbank, pitch, FDpitch):  # Draw the flight director
+
             def draw_V(side):
                 glBegin(GL_LINE_STRIP)
                 glVertex2f(side * 10,-2)  # Flight director stars offset from center
@@ -582,7 +587,7 @@ class PFD_Guage(object):
             glPopMatrix()
 
         def Static_Triangle(self):  # Static Triangle and Marks on top of Atitude
-            
+
             def bank_ticks(dir):
 
                 def short():
@@ -604,7 +609,7 @@ class PFD_Guage(object):
                     glVertex2f(size, radius + size * 2)
                     glVertex2f(-size, radius + size * 2)
                     glEnd()
-                    
+
                 glPushMatrix()
                 glRotatef(dir * 10.0, 0.0, 0.0, 1.0)
                 short()
@@ -617,7 +622,7 @@ class PFD_Guage(object):
                 glRotatef(dir * 15.0, 0.0, 0.0, 1.0)
                 long()
                 glPopMatrix()
-            
+
             radius = 120.0
             glLineWidth(2.5)
             # Draw Solid Triangle
