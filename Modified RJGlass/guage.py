@@ -4,76 +4,75 @@ from OpenGL.GLU import *
 from pygame import image
 import math
 import time
-#CONSTANTS
+# CONSTANTS
 c_VOR = 0
 c_ADF = 1
 
 
-
 class datalogfile_c(object):
-    
-	def __init__(self):
-		self.active = False
-	
-	def activate(self):
-		self.active = True
-		self.f = open("log.txt","w")
-	
-	def write(self, text):
-		if self.active:
-			self.f.write(text+"\n")
-		
-	def close(self):
-		if self.active:
-			self.f.close()
+
+        def __init__(self):
+                self.active = False
+
+        def activate(self):
+                self.active = True
+                self.f = open("log.txt", "w")
+
+        def write(self, text):
+                if self.active:
+                        self.f.write(text+"\n")
+
+        def close(self):
+                if self.active:
+                        self.f.close()
 
 
-class globaltime_c(object): #Used to provide a global timer for timing features
+class globaltime_c(object):  # Used to provide a global timer for timing features
 
-	def __init__(self):
-		self.value = time.time()
-		
-	def update(self, v): #Updated from RJGlass.py in main loop
-		self.value = v
+        def __init__(self):
+                self.value = time.time()
+
+        def update(self, v):  # Updated from RJGlass.py in main loop
+                self.value = v
 
 
-class globaltest_c(object): #Used for debugging and programming uses.
+class globaltest_c(object):  # Used for debugging and programming uses.
 
-	def __init__(self):
-		self.one = 0
-		self.two = 0
-		self.three = 0
-	
-	def one_inc(self):
-		self.one += 1
-		
-	def one_dec(self):
-		self.one -= 1
-		
-	def two_inc(self):
-		self.two += 1
-		
-	def two_dec(self):
-		self.two -= 1
-		
-	def three_inc(self):
-		self.three += 1
-		
-	def three_dec(self):
-		self.three -= 1	
-		
-	def draw(self, x,y):
-		glPushMatrix()
-		glTranslatef(x,y,0)
-		glColor(red)
-		glScalef(0.15,0.15,1.0)
-		s = "ONE: %d TWO: %d THREE: %d" %(globaltest.one, globaltest.two, globaltest.three)
-		glText(s,100)
-		glPopMatrix()
+        def __init__(self):
+                self.one = 0
+                self.two = 0
+                self.three = 0
+
+        def one_inc(self):
+                self.one += 1
+
+        def one_dec(self):
+                self.one -= 1
+
+        def two_inc(self):
+                self.two += 1
+
+        def two_dec(self):
+                self.two -= 1
+
+        def three_inc(self):
+                self.three += 1
+
+        def three_dec(self):
+                self.three -= 1
+
+        def draw(self, x, y):
+                glPushMatrix()
+                glTranslatef(x, y, 0)
+                glColor(red)
+                glScalef(0.15, 0.15, 1.0)
+                s = "ONE: %d TWO: %d THREE: %d" % (globaltest.one, globaltest.two, globaltest.three)
+                glText(s, 100)
+                glPopMatrix()
 
 
 class scissor_c(object):
-    
+
 	def __init__(self, x, y, w, h):
 		self.x_o = self.x = x
 		self.y_o = self.y = y
