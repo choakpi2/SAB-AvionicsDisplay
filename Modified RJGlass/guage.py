@@ -91,7 +91,6 @@ class texture_image(object):
     def __init__(self, filename, do_bind=True):  # s = surface
         s = image.load(filename)
         self.true_w, self.true_h = s.get_size()
-
         self.tostring = image.tostring(s, "RGBA", True)
         self.resize_for_texture(self.tostring)
         glEnable(GL_TEXTURE_2D)
@@ -108,7 +107,6 @@ class texture_image(object):
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         glDisable(GL_TEXTURE_2D)
-
         self.w = w
         self.h = h
 
@@ -121,7 +119,6 @@ class texture_image(object):
             return start
         # Resizes the surface object to a power of 2, so can be used as a texture.
         # Get existing width and heigth
-
         w = self.true_w
         h = self.true_h
         # Calculate new width and heigth
@@ -142,7 +139,6 @@ class texture_image(object):
                     count += 4
                 else:
                     newstring += transparent
-
         self.tostring = newstring
 
     def draw(self, x, y):
@@ -220,7 +216,6 @@ def glText1_1c(x):
     # Includes x correction for #1
     if x == 1:
         glTranslatef(10.0, 0.0, 0.0)
-
     glutStrokeCharacter(GLUT_STROKE_ROMAN, x + 48)
 
 
@@ -233,8 +228,7 @@ def glColor(s):  # Expects tuple of three elements Change GL Color
     'Changes Color in OpenGL, Expects Tuple of 3 elements'
     glColor3f(s[0],s[1],s[2])
 
-# x_s = 1.0
-# y_s = 1.0
+
 # Colors
 purple = (1.0, 0.0, 1.0)
 grey = (0.2, 0.2, 0.3)
@@ -325,7 +319,6 @@ def List_Waypoint(radius, segments):
     l += calc_points(radius, segments, 270, 360, radius, -radius)
     l += calc_points(radius, segments, 180, 270, radius, radius)
     l += calc_points(radius, segments, 90, 180, -radius, radius)
-
     return l
 
 
