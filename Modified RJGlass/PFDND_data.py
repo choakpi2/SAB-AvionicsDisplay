@@ -72,7 +72,7 @@ class ND_c(object):  # Class the handles the Nav Display (ND)
         self.dis_traveled = self.dis_travel_c()
 
 
-class MDA_DH_c(object):  # The class for MDA and DH (They have very similar functions)
+class MDA_DH_c(object):  # The class for MDA and DH
 
     def __init__(self, step):
         self.bug = 200
@@ -114,7 +114,7 @@ class altimeter_c(object):
         self.pressure_HG = 29.92  # Kohlsman HG Altimeter Setting
         self.pressure_HPA = 1013
         self.setting = 29.92
-        self.absolute = data_obj(20)  # Absolute / Radar Altitude (Altitude Above Ground)
+        self.absolute = data_obj(20)  # Absolute / Radar Altitude
         self.MDA = MDA_DH_c(10)  # First number is ID needs to be 0 for MDA
         self.DH = MDA_DH_c(1)  # ID 1 for DH
         self.bug = data_obj(3000)
