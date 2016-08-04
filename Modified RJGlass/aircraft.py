@@ -149,14 +149,14 @@ class data(object):
         self.gear.Right.position.value = 0.0
         self.fuel.left.gal.value -= 0.1
         self.comp(True)  # Set true to tell self.comp, RJGlass is in test mode.
-        self.HSI.Mag_Heading.value += 1
-        self.VSI.value = 1000
+        self.HSI.Mag_Heading.value += 0.1
+        self.VSI.value = 1
         self.Eng_1.N2.value = 65.1
         self.Eng_2.N2.value = 65.5
         self.NAV.VOR1.OBS.value = 112
         if self.count >= 30:
-            self.altimeter.indicated.value = self.altimeter.indicated.value + 7
+            self.altimeter.indicated.value = self.altimeter.indicated.value + 50
             self.NAV.VOR1.hasGS.value = False
             self.count = 0
         self.count += 1
-        self.airspeed.IAS.value += 1
+        self.airspeed.IAS.value -= 0.1

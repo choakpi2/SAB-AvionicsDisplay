@@ -1870,153 +1870,6 @@ class PFD_Guage(object):
             # print "ERROR: HSI.Bearing2 Out of Range"
             # draw(radius,140,1)
 
-        def Nav(self, radius, NAV, hdg):
-            diff = hdg - NAV.OBS.value
-            if diff < 0:
-                diff += 360  # Make sure diff is between 0 and 360
-            glPushMatrix()
-            glRotate(diff, 0, 0, 1)
-            glColor(white)
-            glLineWidth(2.5)
-            # Draw Constant lines
-            h = 70
-            offset = 6
-            # Draw 4 circles
-            x, r, seg = 33, 4, 9
-            glPushMatrix()
-            glTranslatef(x, 0, 0)
-            glCircle(r, seg)
-            glTranslatef(x, 0, 0)
-            glCircle(r, seg)
-            glTranslatef(-3 * x, 0, 0)
-            glCircle(r, seg)
-            glTranslatef(-x, 0, 0)
-            glCircle(r, seg)
-            # Done with 4 circles
-            glPopMatrix()  # Done with circles
-            glLineWidth(3.0)
-            glColor(green)
-            # Draw Top line and arrow
-            arrow_w = 10
-            arrow_bot = radius - offset - h/2 - 5
-            glBegin(GL_LINE_LOOP)
-            glVertex2f(0, radius - offset)
-            glVertex2f(-arrow_w, arrow_bot)
-            glVertex2f(arrow_w, arrow_bot)
-            glEnd()
-            glBegin(GL_LINES)
-            glVertex2f(0, arrow_bot)
-            glVertex2f(0, radius - offset - h)
-            # Draw bottom line)
-            glVertex2f(0, -radius + offset)
-            glVertex2f(0, -radius + offset + h)
-            glEnd()
-            if NAV.hasNav.value:
-                # Draw CDI Line
-                cdi_x = NAV.CDI.value / 127.0 * (x * 2 + r)  # x*2+r is max difflection = to outmost point of outer circle
-                glBegin(GL_LINES)
-                glVertex2f(cdi_x, -h)
-                glVertex2f(cdi_x, h)
-                glEnd()
-                # Draw To/From Triangle
-                offset, w, h = 60, 7, 15
-                glBegin(GL_LINE_LOOP)
-                if NAV.ToFrom.value == NAV.ToFrom.TO:
-                    # Draw To Arrow
-                    glVertex2f(0, offset)
-                    glVertex2f(-w, offset - h)
-                    glVertex2f(w, offset - h)
-                elif NAV.ToFrom.value == NAV.ToFrom.FROM:
-                    glVertex2f(0, offset - h)
-                    glVertex2f(-w, offset)
-                    glVertex2f(w, offset)
-                glEnd()
-            # ---
-            glPopMatrix()
-
-        def Nav_text(self, VOR, x, y):
-
-            def text_name(name, active, x, y):
-                glPushMatrix()
-                glTranslatef(x, y, 0)
-                if active:  # If VOR active draw normal text.
-                    glPushMatrix()
-                    glColor(green)
-                    glScalef(0.17, 0.17, 1)
-                    glText(name, 90)
-                    glPopMatrix()
-                else:  # If VOR not active draw text smaller in red with box around it.
-                    glPushMatrix()
-                    glColor(red)
-                    # Draw Box
-                    glBegin(GL_LINE_LOOP)
-                    w, h = 60, 20
-                    glVertex2f(0, 0)
-                    glVertex2f(0, h)
-                    glVertex2f(w, h)
-                    glVertex2f(w, 0)
-                    glEnd()
-                    # Draw Smaller text
-                    glTranslatef(5, 3, 0)  # Move text slightly lower and to right
-                    glScalef(0.13, 0.13, 1)
-                    glText(name, 100)
-                    glPopMatrix()
-                glPopMatrix()
-
-            def text_course(value, x, y):
-                glPushMatrix()
-                glTranslatef(x, y, 0)
-                glScalef(0.14, 0.14, 1.0)
-                glText("CRS %3d" % value, 85)
-                glPopMatrix()
-
-            def text_DME(value, active, x, y):
-                glPushMatrix()
-                glTranslatef(x, y, 0)
-                # Do large Digit first if active
-                if (active) & (value >= 0):
-                    glPushMatrix()
-                    glScale(0.15, 0.15, 1.0)
-                    glText("%2d" % (value // 1), 90)
-                    glPopMatrix()
-                    if value >= 100:
-                        s = "   "
-                    else:
-                        s = "  .%d" % ((value * 10) % 10)
-                else:
-                    s = "---"
-                # Now do tenths digit and NM text. If not active then do "-----" NM
-                glTranslatef(-8, -0.2, 0)  # Move to appropriate place
-                glPushMatrix()
-                glScalef(0.13, 0.13, 1)
-                glText(s, 140)
-                if s != "---":  # if --- then no need for NM text
-                    glText("NM", 90)
-                glPopMatrix()
-                # ----
-                glPopMatrix()
-
-            def text_ID(value, active, x, y):
-                if active:
-                    glPushMatrix()
-                    glTranslatef(x, y, 0)
-                    glScalef(0.14, 0.14, 1.0)
-                    glText(value, 85)
-                    glPopMatrix()
-            # Draw Text to Left
-            glPushMatrix()
-            glLineWidth(2.0)
-            if VOR.hasLoc.value:
-                name = "LOC" + VOR.name[3]
-                text_name(name, VOR.hasNav.value, x, y)
-            else:
-                text_name(VOR.name, VOR.hasNav.value, x, y)
-            glColor(green)
-            text_course(VOR.OBS.value, x, y - 20)
-            text_DME(VOR.DME.value, VOR.hasNav.value, x + 4, y - 45)
-            text_ID(VOR.ID.value, VOR.hasNav.value, x, y-65)
-            glPopMatrix()
-
         def draw(self, x, y, aircraft, declutter):
             radius = 145
             glPushMatrix()
@@ -2029,11 +1882,9 @@ class PFD_Guage(object):
             self.marks(radius)
             if not declutter:
                 self.magnetic_track(radius, aircraft.HSI)
-                self.Nav(radius, aircraft.NAV.active, aircraft.HSI.Mag_Heading.value)
                 self.Bearing(radius, aircraft)
                 self.heading_bug(radius, aircraft.HSI, aircraft.frame_time)
                 glDisable(GL_SCISSOR_TEST)
-                self.Nav_text(aircraft.NAV.active, -240, 80)
             glPopMatrix()
 
     def __init__(self):

@@ -1,5 +1,6 @@
 import formula
 import pickle
+import guage
 
 
 class data_obj(object):  # Used to make a object for Definition to link to
@@ -216,14 +217,14 @@ class HSI_c(object):
             self.Bearing2 = self.NADA
 
     def inc_Heading_Bug(self):
-        self.Heading_Bug.value = Check_360(self.Heading_Bug.value + 1)
+        self.Heading_Bug.value = guage.Check_360(self.Heading_Bug.value + 1)
         self.Heading_Bug.update = True
-        self.Heading_Bug_Timer = globaltime.value + 5
+        self.Heading_Bug_Timer = guage.globaltime.value + 5
 
     def dec_Heading_Bug(self):
-        self.Heading_Bug.value = Check_360(self.Heading_Bug.value - 1)
+        self.Heading_Bug.value = guage.Check_360(self.Heading_Bug.value - 1)
         self.Heading_Bug.update = True
-        self.Heading_Bug_Timer = globaltime.value + 5
+        self.Heading_Bug_Timer = guage.globaltime.value + 5
 
 
 class NAV_c(object):
@@ -331,7 +332,7 @@ class airspeed_c(object):
     def set_disp(self, Vspeed):
         # This sets what is displayed below speed tape. (Goes blank after a few seconds)
         self.Vspeed_disp = Vspeed
-        self.Vspeed_disp_timer = globaltime.value + 5  # 5 seconds display
+        self.Vspeed_disp_timer = guage.globaltime.value + 5  # 5 sec delay
 
     def cycle_Vspeed_input(self):
         temp = self.Vspeed_input
