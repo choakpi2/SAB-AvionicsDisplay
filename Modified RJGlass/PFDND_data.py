@@ -1,4 +1,3 @@
-import formula
 import pickle
 import guage
 
@@ -6,7 +5,7 @@ import guage
 class data_obj(object):  # Used to make a object for Definition to link to
     def __init__(self, value):
         self.value = value
-        self.adjusted = value  # Used incase value needs to be adjusted from data inputed from FSX.
+        self.adjusted = value  # Used incase value needs to be adjusted
 
 
 class event_obj(object):  # Used to hold send event, with its data
@@ -26,85 +25,6 @@ class PFD_pickle_c(object):
         return pickle.dumps(self, -1)
 
 
-class ND_c(object):  # Class the handles the Nav Display (ND)
-
-    class dis_travel_c(object):
-
-        def __init__(self):
-            self.prev_lat = 1.0
-            self.prev_long = 1.0
-            self.total = 0.0
-            self.increment = 0.0
-
-        def calc(self, lat, long):
-            # print lat, long, self.prev_lat, self.prev_long
-            d = formula.dist_latlong_nm((lat, long), (self.prev_lat, self.prev_long))
-            if d > 0.005:
-                self.total += d
-            self.prev_lat = lat
-            self.prev_long = long
-            self.increment = d
-
-        def reset(self):
-            self.total = 0.0
-            self.increment = 0.0
-
-    class range_c(object):
-
-        def __init__(self):
-            self.index = 3
-            self.ranges = [5, 10, 20, 40, 80, 160, 320]
-            self.num_ranges = len(self.ranges)
-            self.value = self.ranges[self.index]
-
-        def up(self):
-            if self.index < (self.num_ranges - 1):
-                self.index += 1
-                self.value = self.ranges[self.index]
-
-        def down(self):
-            self.index -= 1
-            if self.index < 0:
-                self.index = 0
-                self.value = self.ranges[self.index]
-
-    def __init__(self):
-        self.range = self.range_c()
-        self.dis_traveled = self.dis_travel_c()
-
-
-class MDA_DH_c(object):  # The class for MDA and DH
-
-    def __init__(self, step):
-        self.bug = 200
-        self.visible = False
-        self.selected = False
-        self.notify = False  # On if MDA_DH notification is on
-        self.flash = 0  # Int used for flashing of notifier (MDA use only)
-        self.frame_count = 0  # Used for flash delay of MDA notifier
-        self.increment = step  # The lowest increment for MDA or DH
-        self.changed = True
-
-    def cycle_visible(self):
-        self.changed = True
-        if self.visible:
-            self.visible = False
-        else:
-            self.visible = True
-
-    def bug_increase(self):
-        if self.visible:  # Must be visible to change value
-            self.bug += self.increment
-            self.changed = True
-
-    def bug_decrease(self):
-        self.changed = True
-        if self.visible:  # Must be visible to change value
-            self.bug -= self.increment
-            if self.bug < 0:
-                self.bug = 0
-
-
 class altimeter_c(object):
 
     def __init__(self):
@@ -114,10 +34,8 @@ class altimeter_c(object):
         self.indicated = data_obj(20)
         self.pressure_HG = 29.92  # Kohlsman HG Altimeter Setting
         self.pressure_HPA = 1013
+        self.absolute = data_obj(20)
         self.setting = 29.92
-        self.absolute = data_obj(20)  # Absolute / Radar Altitude
-        self.MDA = MDA_DH_c(10)  # First number is ID needs to be 0 for MDA
-        self.DH = MDA_DH_c(1)  # ID 1 for DH
         self.bug = data_obj(3000)
         self.Kohlsmanx16 = event_obj(0)
 
@@ -186,7 +104,6 @@ class altimeter_c(object):
         if self.bug.value < 0:
             self.bug.value = 0
 
-
 class HSI_c(object):
 
     def __init__(self):
@@ -225,48 +142,6 @@ class HSI_c(object):
         self.Heading_Bug.value = guage.Check_360(self.Heading_Bug.value - 1)
         self.Heading_Bug.update = True
         self.Heading_Bug_Timer = guage.globaltime.value + 5
-
-
-class NAV_c(object):
-
-    class VOR_c(object):
-
-        def __init__(self, name):
-            self.OBS = data_obj(330)
-            self.CDI = data_obj(-27)
-            self.GSI = data_obj(27)
-            self.DME = data_obj(0.5)
-            self.ID = data_obj("ATL")
-            self.name = name
-            self.hasNav = data_obj(-1)
-            self.hasGS = data_obj(0)
-            self.hasLoc = data_obj(0)
-            self.radial = data_obj(20)
-            self.ToFrom = data_obj(2)
-            self.ToFrom.TO = 1
-            self.ToFrom.FROM = 2
-            self.active = data_obj(-1)
-
-    class ADF_c(object):
-
-        def __init__(self, name):
-            self.radial = data_obj(100)
-            self.active = data_obj(True)
-            self.hasNav = data_obj(-1)
-            self.name = name
-
-    def cycle_Active_NAV(self):  # Between VOR1 and VOR2 for now.
-        if self.active == self.VOR1:
-            self.active = self.VOR2
-        else:
-            self.active = self.VOR1
-
-    def __init__(self):
-        self.VOR1 = self.VOR_c("VOR1")
-        self.VOR2 = self.VOR_c("VOR2")
-        self.ADF1 = self.ADF_c("ADF1")
-        self.ADF2 = self.ADF_c("ADF2")
-        self.active = self.VOR1  # Make VOR1 active nav.
 
 
 class attitude_c(object):

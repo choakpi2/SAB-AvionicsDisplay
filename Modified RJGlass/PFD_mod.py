@@ -768,13 +768,8 @@ class PFD_Guage(object):
             GL.glEnd()
             # Start of Draw_Atitude
 
-        def draw(self, attitude, r_alt, active_Nav, frame_time, x, y, declutter):
-            # This is used to figure out if localizer is active on attitude guage.
-            if (active_Nav.hasLoc.value) & (r_alt.value < 605):  # +5 due to rounding.
-                loc_active = True
-            else:
-                loc_active = False
-
+        def draw(self, attitude, r_alt, frame_time, x, y, declutter):
+            loc_active = False
             pixel_per_degree = 7.25
             pitch = -attitude.pitch.value
             roll = -attitude.bank.value
@@ -809,11 +804,6 @@ class PFD_Guage(object):
                     self.Flight_Director(attitude.bank.value, attitude.FD_bank.value, attitude.pitch.value, attitude.FD_pitch.value)
                 GL.glDisable(GL.GL_SCISSOR_TEST)
                 self.Markers(attitude.marker, frame_time, 115, 148)  # Draw Outer, Middle, or Inner Marker
-
-                # print active_Nav.hasLoc.value, r_alt
-                if loc_active:
-                    self.Localizer(-active_Nav.CDI.value, 0, -120)
-
                 # End if not declutter
             else:  # Since in declutter need to draw large red arrows to point towards horizon.
                 GL.glPushMatrix()
@@ -830,7 +820,6 @@ class PFD_Guage(object):
                 self.draw_declutter_arrow(30, -15 * pixel_per_degree)
                 GL.glPopMatrix()
             GL.glPopMatrix()
-
 
     class Alt_Guage:
 
@@ -1125,6 +1114,7 @@ class PFD_Guage(object):
                     DH.notify = True
 
         def alt_bug_text(self, bug, x, y):
+            # This Displays Altitude Bug Setting
             GL.glColor(guage.purple)
             GL.glLineWidth(2.0)
             GL.glPushMatrix()
@@ -1136,6 +1126,7 @@ class PFD_Guage(object):
             GL.glPopMatrix()
 
         def alt_setting_disp(self, setting, x, y):
+            # This Displays the Kollsman Window Setting
             GL.glPushMatrix()
             GL.glTranslate(x, y, 0)
             GL.glLineWidth(2.0)
@@ -1161,7 +1152,6 @@ class PFD_Guage(object):
             GL.glPopMatrix()
 
         def draw(self, altimeter, x, y, frame_time, declutter):
-            pixel_per_foot = 13 / 20.0
             y_center = 150.0
             GL.glPushMatrix()
             GL.glEnable(GL.GL_SCISSOR_TEST)
@@ -1170,22 +1160,19 @@ class PFD_Guage(object):
             GL.glLineWidth(1.0)
             self.tick_marks(altimeter.indicated.value)
             if not declutter:
-                # if altimeter.MDA.visible:
                 self.thousand_alt_bug(altimeter.indicated.value, altimeter.bug.value, y_center)
             self.thousand_tick_marks(altimeter.indicated.value, y_center)
             if not declutter:
                 self.alt_bug(altimeter.indicated.value, altimeter.bug.value, y_center)
-                self.radar_alt(altimeter.absolute.adjusted, pixel_per_foot, y_center, altimeter.DH)  # Yellow line with slashes beneth.
             GL.glPopMatrix()
             GL.glPushMatrix()
 
             self.altitude_disp(altimeter.indicated.value, x, y + 150)
-            #print altimeter.value
+            # print altimeter.value
             GL.glDisable(GL.GL_SCISSOR_TEST)
             if not declutter:
-                self.alt_bug_text(altimeter.bug.value, x + 30, y + 345)
-                self.alt_setting_disp(altimeter.setting, x+7, y - 25)
-                self.radar_disp(altimeter.absolute.adjusted, x - 87, y - 20, altimeter.DH.notify)
+                self.alt_bug_text(altimeter.bug.value, x+30, y+345)
+                self.alt_setting_disp(altimeter.setting, x+7, y-25)
             GL.glPopMatrix()
 
     class VSI_Guage:
@@ -1480,7 +1467,7 @@ class PFD_Guage(object):
             self.Heading_Ticks(radius, aircraft.HSI.Mag_Heading.value)
             self.marks(radius)
             if not declutter:
-                self.magnetic_track(radius, aircraft.HSI)
+                # self.magnetic_track(radius, aircraft.HSI)
                 self.heading_bug(radius, aircraft.HSI, aircraft.frame_time)
                 GL.glDisable(GL.GL_SCISSOR_TEST)
             GL.glPopMatrix()
@@ -1492,7 +1479,6 @@ class PFD_Guage(object):
         self.alt_g = self.Alt_Guage()
         self.HSI = self.HSI_Guage()
         self.VSI = self.VSI_Guage()
-        # self.FMA = self.FMA_Guage()
 
     def draw(self, aircraft, x, y):  # x,y is the xy cordinates of center of PFD guage
         y += 445  # Fine tune position
@@ -1502,7 +1488,7 @@ class PFD_Guage(object):
         # print "Speed", time.time()
         self.speed.draw(aircraft.airspeed, aircraft.onground.value, x - 248, y - 140, declutter)
         # print "A_Horizon", time.time()
-        self.artifical_horizon.draw(aircraft.attitude, aircraft.altimeter.absolute, aircraft.NAV.active, aircraft.frame_time, x + 0, y + 0, declutter)
+        self.artifical_horizon.draw(aircraft.attitude, aircraft.altimeter.absolute, aircraft.frame_time, x + 0, y + 0, declutter)
         # print "Altimeter", time.time()
         self.alt_g.draw(aircraft.altimeter, x + 155, y - 150, aircraft.frame_time, declutter)
         # print "HSI", time.time()
