@@ -1243,7 +1243,6 @@ class PFD_Guage(object):
                 angle = -60 - (y * 15)
             if VS <= 0:
                 angle = angle * -1.0  # If VS negative then make angle -
-            # Done determining angle
             # Draw Pointer
             # angle =0
             GL.glColor(guage.green)
@@ -1252,11 +1251,11 @@ class PFD_Guage(object):
             GL.glRotate(angle, 0.0, 0.0, 1.0)
             GL.glTranslatef(-radius + 10.0, 0.0, 0.0)
             # Draw line and arrow
-            GL.glBegin(GL.GL_LINES)
+            GL.glBegin(GL.GL_LINES)  # Draw Line
             GL.glVertex2f(40.0, 0.0)
             GL.glVertex2f(0.0, 0.0)
             GL.glEnd()
-            GL.glBegin(GL.GL_POLYGON)
+            GL.glBegin(GL.GL_POLYGON)  # Draw Tip
             GL.glVertex2f(0.0, 0.0)
             GL.glVertex2f(30.0, 5.0)
             GL.glVertex2f(30.0, -5.0)
