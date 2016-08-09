@@ -28,8 +28,8 @@ class VSI_Guage_747:
         GL.glBegin(GL.GL_QUADS)
         GL.glVertex2f(x1, y1)
         GL.glVertex2f(x1+width, y1)
-        GL.glVertex2f(x1+width, y1+height)
         GL.glVertex2f(x1, y1+height)
+        GL.glVertex2f(x1+width, y1+height)
         GL.glEnd()
 
     def line(y1, y2):
@@ -38,7 +38,20 @@ class VSI_Guage_747:
         GL.glVertex2f(0.0, y2)
         GL.glEnd()
 
-    def marks(self, radius, small, med, large):
+    def scale(x1, y1, width, height, upp_lim, exp):
+        # Make List of Lengths
+        a = []
+
+
+class VSI_Guage:
+
+    def line(y1, y2):
+        GL.glBegin(GL.GL_LINES)
+        GL.glVertex2f(0.0, y1)
+        GL.glVertex2f(0.0, y2)
+        GL.glEnd()
+
+    def marks(self, radius):
 
         def line(y1, y2):
             GL.glBegin(GL.GL_LINES)
@@ -54,10 +67,16 @@ class VSI_Guage_747:
             GL.glPopMatrix()
 
         # Set up lists with degree marks
-        a = [large] * 3 + [small] * 4 + [med] + [small] * 4
-        size = a + [large] + a[::-1]  # Above + large at 0 + reverse of above
+        a = [15] * 3 + [5] * 4 + [10] + [5] * 4
+        size = a + [15] + a[::-1]  # Above + large at 0 + reverse of above
         # Now Degrees to rotate
         rot = [15] * 2 + [6] * 20 + [15] * 3
+        
+        b = [5] * 4 + [10] + [5] * 4 + [15]
+        deg = [180/20] * 20
+        for i in range(9):
+            b += [5] * 4 + [10] + [5] * 4 + [15] 
+
 
         white = (1.0, 1.0, 1.0)
         GL.glColor(white)
@@ -111,37 +130,35 @@ class VSI_Guage_747:
         GL.glTranslatef(-radius + 10.0, 0.0, 0.0)
 
         # Draw line and arrow
-        glBegin(GL_LINES)  # Draw Line
-        glVertex2f(40.0, 0.0)
-        glVertex2f(0.0, 0.0)
-        glEnd()
-        glBegin(GL_POLYGON)  # Draw Tip
-        glVertex2f(0.0, 0.0)
-        glVertex2f(30.0, 5.0)
-        glVertex2f(30.0, -5.0)
-        glEnd()
-        glPopMatrix()
+        GL.glBegin(GL.GL_LINES)  # Draw Line
+        GL.glVertex2f(40.0, 0.0)
+        GL.glVertex2f(0.0, 0.0)
+        GL.glEnd()
+        GL.glBegin(GL.GL_POLYGON)  # Draw Tip
+        GL.glVertex2f(0.0, 0.0)
+        GL.glVertex2f(30.0, 5.0)
+        GL.glVertex2f(30.0, -5.0)
+        GL.glEnd()
+        GL.glPopMatrix()
 
     def text(self, VS):
         # Draw text in center of guage
         green = (0.0, 0.8, 0.0)
-        glColor(green)
-        glPushMatrix()
-        glTranslate(-18.0, -6.0, 0.0)
-        glScalef(0.13, 0.13, 0.0)
+        GL.glColor(green)
+        GL.glPushMatrix()
+        GL.glTranslate(-18.0, -6.0, 0.0)
+        GL.glScalef(0.13, 0.13, 0.0)
         value = round(abs(VS / 1000.0), 1)
         if value >= 10:
             glText("%2.0f" % value)
         else:
             glText("%2.1f" % value)
-        glPopMatrix()
+        GL.glPopMatrix()
 
     def draw(self, x, y, radius, VS):
-        glPushMatrix()
-        glTranslate(x, y, 0.0)
-        self.marks(radius, 5, 10, 15)
+        GL.glPushMatrix()
+        GL.glTranslate(x, y, 0.0)
+        self.marks(radius)
         self.pointer(radius, VS)
         self.text(VS)
-        glPopMatrix()
-
-
+        GL.glPopMatrix()
