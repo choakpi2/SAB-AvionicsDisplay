@@ -1,52 +1,57 @@
-# Importing the Necessary Packages
-import pygame
-from pygame.locals import *
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from OpenGL.GLUT import *
+from OpenGL import GL
+from OpenGL import GLU
+from OpenGL import GLUT
 
 
 def glText(s, space=80):
     'takes string input and outputs it to OpenGl Environment'
     for c in s:
-        glPushMatrix()
+        GL.glPushMatrix()
         if c == "1":  # If a 1 then move right a little so looks better
-            glTranslatef(16.0, 0.0, 0.0)
+            GL.glTranslatef(16.0, 0.0, 0.0)
         elif c == "I":  # If a I then move right too
-            glTranslatef(30.0, 0.0, 0.0)
+            GL.glTranslatef(30.0, 0.0, 0.0)
         elif c == "(":  # Looks better if moved right too
-            glTranslatef(25.0, 0.0, 0.0)
+            GL.glTranslatef(25.0, 0.0, 0.0)
         if c == ".":
             s = 35
         else:
             s = space
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, ord(c))
-        glPopMatrix()
-        glTranslatef(s, 0.0, 0.0)
+        GLUT.glutStrokeCharacter(GLUT.GLUT_STROKE_ROMAN, ord(c))
+        GL.glPopMatrix()
+        GL.glTranslatef(s, 0.0, 0.0)
 
 
-class VSI_Guage:
+class VSI_Guage_747:
+
+    def box(x1, y1, width, height):
+        GL.glBegin(GL.GL_QUADS)
+        GL.glVertex2f(x1, y1)
+        GL.glVertex2f(x1+width, y1)
+        GL.glVertex2f(x1+width, y1+height)
+        GL.glVertex2f(x1, y1+height)
+        GL.glEnd()
 
     def line(y1, y2):
-        glBegin(GL_LINES)
-        glVertex2f(0.0, y1)
-        glVertex2f(0.0, y2)
-        glEnd()
+        GL.glBegin(GL.GL_LINES)
+        GL.glVertex2f(0.0, y1)
+        GL.glVertex2f(0.0, y2)
+        GL.glEnd()
 
     def marks(self, radius, small, med, large):
 
         def line(y1, y2):
-            glBegin(GL_LINES)
-            glVertex2f(0.0, y1)
-            glVertex2f(0.0, y2)
-            glEnd()
+            GL.glBegin(GL.GL_LINES)
+            GL.glVertex2f(0.0, y1)
+            GL.glVertex2f(0.0, y2)
+            GL.glEnd()
 
         def text(x, y, s):
-            glPushMatrix()
-            glTranslatef(x, y - 6.0, 0.0)
-            glScalef(0.13, 0.13, 0.0)
+            GL.glPushMatrix()
+            GL.glTranslatef(x, y - 6.0, 0.0)
+            GL.glScalef(0.13, 0.13, 0.0)
             glText(s)
-            glPopMatrix()
+            GL.glPopMatrix()
 
         # Set up lists with degree marks
         a = [large] * 3 + [small] * 4 + [med] + [small] * 4
@@ -55,16 +60,16 @@ class VSI_Guage:
         rot = [15] * 2 + [6] * 20 + [15] * 3
 
         white = (1.0, 1.0, 1.0)
-        glColor(white)
+        GL.glColor(white)
 
-        glLineWidth(2.0)
-        glPushMatrix()
+        GL.glLineWidth(2.0)
+        GL.glPushMatrix()
 
         # Go through all point on list
         for i in range(25):
             line(radius, radius - size[i])
-            glRotate(rot[i], 0.0, 0.0, 1.0)
-        glPopMatrix()
+            GL.glRotate(rot[i], 0.0, 0.0, 1.0)
+        GL.glPopMatrix()
 
         # Draw text 1,2,4 on top and bottom and appropriate spot
         x1, y1 = -46.0, 70
@@ -99,11 +104,11 @@ class VSI_Guage:
             angle = angle * -1.0  # If VS negative then make angle -
 
         green = (0.0, 0.8, 0.0)
-        glColor(green)
-        glLineWidth(2.0)
-        glPushMatrix()
-        glRotate(angle, 0.0, 0.0, 1.0)
-        glTranslatef(-radius + 10.0, 0.0, 0.0)
+        GL.glColor(green)
+        GL.glLineWidth(2.0)
+        GL.glPushMatrix()
+        GL.glRotate(angle, 0.0, 0.0, 1.0)
+        GL.glTranslatef(-radius + 10.0, 0.0, 0.0)
 
         # Draw line and arrow
         glBegin(GL_LINES)  # Draw Line
@@ -140,48 +145,3 @@ class VSI_Guage:
         glPopMatrix()
 
 
-def InitPyGame():
-    glutInit(())
-    pygame.init()
-    s = pygame.display.set_mode((1024, 768), DOUBLEBUF | OPENGL)
-    return s
-
-
-def InitView(smooth, width, height):
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()
-    glOrtho(0, width, 0.0, height, -1.0, 1.0)
-    x_s = width/1024.0
-    y_s = height/768.0
-    glScalef(x_s, y_s, 1.0)
-    # scissor.x_s = x_s
-    # scissor.y_s = y_s
-    if smooth:
-        # Enable Smoothing Antianalising
-        glEnable(GL_LINE_SMOOTH)
-        glEnable(GL_BLEND)
-        # GlBlendFunc
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE)
-
-
-def main(x, y, objDraw):
-    while True:
-        # Quit Condition
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        objDraw.draw(x/2, y/2, 140, 1000)
-        pygame.display.flip()
-        pygame.time.wait(10)
-
-
-x = 1024
-y = 768
-# Display Window through pygame
-InitPyGame()
-InitView(True, x, y)
-VSI = VSI_Guage()
-main(x, y, VSI)

@@ -13,12 +13,9 @@ def InitPyGame():
     return s
 
 
-def InitView(smooth, width, height, ortho):
+def InitView(smooth, width, height):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
-    if ortho:
-        # Enable Ortho
-        glOrtho(0, width, 0.0, height, -1.0, 1.0)
     if smooth:
         # Enable Smoothing Antianalising
         glEnable(GL_LINE_SMOOTH)
@@ -86,5 +83,5 @@ x = 1024
 y = 768
 # Display Window through pygame
 InitPyGame()
-InitView(True, x, y, False)
+InitView(True, x, y)
 main(x, y)
