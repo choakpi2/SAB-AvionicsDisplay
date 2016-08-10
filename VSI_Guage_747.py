@@ -70,13 +70,12 @@ class VSI_Guage:
         a = [15] * 3 + [5] * 4 + [10] + [5] * 4
         size = a + [15] + a[::-1]  # Above + large at 0 + reverse of above
         # Now Degrees to rotate
-        rot = [15] * 2 + [6] * 20 + [15] * 3
+        rot = [30] * 3 + [6] * 20 + [15] * 2
         
         b = [5] * 4 + [10] + [5] * 4 + [15]
         deg = [180/20] * 20
         for i in range(9):
             b += [5] * 4 + [10] + [5] * 4 + [15] 
-
 
         white = (1.0, 1.0, 1.0)
         GL.glColor(white)
