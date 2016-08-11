@@ -39,7 +39,7 @@ def main(x, y, objDraw):
                 pygame.quit()
                 quit()
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-        objDraw.draw(x/2, y/2, 140, 1000)
+        objDraw.draw(x/2, y/2)
         pygame.display.flip()
         pygame.time.wait(10)
 
@@ -49,5 +49,5 @@ y = 768
 # Display Window through pygame
 InitPyGame()
 InitView(True, x, y)
-VSI = VSI_Guage_747.VSI_Guage()
+VSI = VSI_Guage_747.VSI_Guage_747()
 main(x, y, VSI)
