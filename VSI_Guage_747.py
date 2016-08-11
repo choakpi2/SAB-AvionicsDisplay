@@ -5,6 +5,25 @@ from OpenGL import GLUT
 
 class VSI_Guage_747:
 
+    def metronome(self, heightL, heightR, width, value, maxLim):
+
+        GL.glBegin(GL.GL_POLYGON)
+        GL.glColor((0.2, 0.2, 0.3))
+        GL.glVertex2f(0, heightL)
+        GL.glVertex2f(width, heightR)
+        GL.glVertex2f(width, -heightR)
+        GL.glVertex2f(0, -heightL)
+        GL.glEnd()
+
+        y1 = (0.9 * heightL * value) / (maxLim * 1000)
+        y2 = (0.9 * heightR * value) / (maxLim * 1000)
+
+        GL.glBegin(GL.GL_LINES)
+        GL.glColor((1.0, 1.0, 1.0))
+        GL.glVertex2f(0.0, y1)
+        GL.glVertex2f(width, y2)
+        GL.glEnd()
+
     def ruler(self, maxLim, height, expo):
 
         def ticks(length, y):
@@ -65,4 +84,5 @@ class VSI_Guage_747:
         GL.glPushMatrix()
         GL.glTranslate(x, y, 0.0)
         self.ruler(5, 150, False)
+        self.metronome(150, 50, 30, 2000, 5)
         GL.glPopMatrix()
