@@ -1059,60 +1059,6 @@ class PFD_Guage(object):
 
             GL.glPopMatrix()  # Altitude_disp
 
-        def radar_disp(self, aag, x, y, notify):
-            if (aag < 2500):  # If its above 2500 then don't display
-                # Determine number to print on atitude display.
-                num = aag
-                if num >= 1000:  # Then do multiples of 50
-                    # round  to multiples of 50.
-                    num = (num + 25) // 50 * 50
-                elif num >= 200:  # Do multiples of 10
-                    num = (num + 5) // 10 * 10
-                else:  # Do multiples of  5 (less than 200')
-                    num = (num + 2.5) // 5 * 5
-                # Display radar altitude
-                if notify:  # If DH notify is on then change color to yellow else green (default color)
-                    GL.glColor(guage.yellow)
-                else:
-                    GL.glColor(guage.green)
-                GL.glLineWidth(2.0)
-                GL.glPushMatrix()
-                GL.glTranslatef(x, y, 0.0)  # Move to start of digits
-                # Draw Numbers
-                GL.glPushMatrix()
-                GL.glScalef(0.16, 0.16, 1.0)
-                guage.glText("%4d" % num, 90)
-                GL.glPopMatrix()  # scale3f
-                # Draw FT
-                GL.glPushMatrix()
-                GL.glTranslatef(65.0, -1.0, 0.0)
-                GL.glScalef(0.12, 0.12, 1.0)
-                guage.glText("FT")
-                GL.glPopMatrix()  # translate
-                GL.glPopMatrix()  # translate
-
-        def radar_alt(self, aag, pixel_per_foot, y_cent, DH):  # Puts mark on tape that show ground.
-
-            def foreground(aag, y_cent):  # Draw the correct white lines for foreground
-                GL.glColor(guage.white)
-                GL.glLineWidth(2.0)
-                if aag > 1020:
-                        h = 30
-                else:
-                        h = 12
-                GL.glBegin(GL.GL_LINES)
-                GL.glVertex2f(0.0, y_cent + h)
-                GL.glVertex2f(20.0, y_cent + h)
-                GL.glVertex2f(0.0, y_cent - h)
-                GL.glVertex2f(20.0, y_cent - h)
-                GL.glEnd()
-
-            DH.notify = False  # Reset to false, will turn true is meets condition below
-            if DH.visible:
-                diff = aag-DH.bug
-                if (diff <= 0) & (aag > 0):  # Turn on DH notifier if under DH and not on ground
-                    DH.notify = True
-
         def alt_bug_text(self, bug, x, y):
             # This Displays Altitude Bug Setting
             GL.glColor(guage.purple)
