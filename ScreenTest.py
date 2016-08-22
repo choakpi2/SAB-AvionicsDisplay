@@ -4,6 +4,7 @@ from pygame import locals
 from OpenGL import GL
 from OpenGL import GLUT
 import VSI_Guage_747
+import ALT_Guage_747
 
 
 def InitPyGame():
@@ -20,8 +21,8 @@ def InitView(smooth, width, height):
     x_s = width/1024.0
     y_s = height/768.0
     GL.glScalef(x_s, y_s, 1.0)
-    # scissor.x_s = x_s
-    # scissor.y_s = y_s
+    ALT_Guage_747.scissor.x_s = x_s
+    ALT_Guage_747.scissor.y_s = y_s
     if smooth:
         # Enable Smoothing Antianalising
         GL.glEnable(GL.GL_LINE_SMOOTH)
@@ -46,8 +47,11 @@ def main(x, y, objDraw):
 
 x = 1024
 y = 768
+ALT_Guage_747.scissor.x_s = 1.1
+ALT_Guage_747.scissor.y_s = 1.0
+
 # Display Window through pygame
 InitPyGame()
 InitView(True, x, y)
-VSI = VSI_Guage_747.VSI_Guage_747()
-main(x, y, VSI)
+ALT = ALT_Guage_747.ALT_Guage_747()
+main(x, y, ALT)

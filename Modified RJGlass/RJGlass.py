@@ -1,13 +1,13 @@
 import sys
 import os
-from OpenGL.GL import *
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
+from OpenGL import GL
+from OpenGL import GLU
+from OpenGL import GLUT
 import pygame
-from pygame.locals import *
+from pygame import locals
 from pygame import image
 import time
-from guage import *
+import guage
 
 # This is code to import config file (config.py)
 try:
@@ -47,44 +47,44 @@ class screen_c(object):
 
 
 def InitPyGame():
-    glutInit(())
+    GLUT.glutInit(())
     pygame.init()
     if config.full_screen:
-        s = pygame.display.set_mode((1024, 768), DOUBLEBUF | OPENGL | FULLSCREEN)
+        s = pygame.display.set_mode((1024, 768), locals.DOUBLEBUF | locals.OPENGL | locals.FULLSCREEN)
     else:
-        s = pygame.display.set_mode((1024, 768), DOUBLEBUF | OPENGL)
+        s = pygame.display.set_mode((1024, 768), locals.DOUBLEBUF | locals.OPENGL)
     return s
 
 
 def InitView(smooth, width, heigth):
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()
-    glOrtho(0, width, 0.0, heigth, -1.0, 1.0)
+    GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+    GL.glLoadIdentity()
+    GL.glOrtho(0, width, 0.0, heigth, -1.0, 1.0)
 
     x_s = width/1024.0
     y_s = heigth/768.0
 
-    glScalef(x_s, y_s, 1.0)
-    scissor.x_s = x_s
-    scissor.y_s = y_s
+    GL.glScalef(x_s, y_s, 1.0)
+    guage.scissor.x_s = x_s
+    guage.scissor.y_s = y_s
     if smooth:
         # Enable Smoothing Antianalising
-        glEnable(GL_LINE_SMOOTH)
-        glEnable(GL_BLEND)
+        GL.glEnable(GL.GL_LINE_SMOOTH)
+        GL.glEnable(GL.GL_BLEND)
         # glBlendFunc(GL_SRC_ALPHA, GL_ZERO)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_DONT_CARE)
 
 
 def DisplaySplash(filename, delay, window_x, window_y):
     # Display needs to be initialized first.
     i = image.load(filename)
-    splash_image = bitmap_image(i)
+    splash_image = guage.bitmap_image(i)
     # Determine the x and y coords to put in center of screen.
     splash_x = (window_x / 2) - (splash_image.w/2)
     splash_y = (window_y / 2) - (splash_image.h/2)
-    glRasterPos3f(splash_x, splash_y, 0)
-    glDrawPixels(splash_image.w, splash_image.h, GL_RGBA, GL_UNSIGNED_BYTE, splash_image.tostring)
+    GL.glRasterPos3f(splash_x, splash_y, 0)
+    GL.glDrawPixels(splash_image.w, splash_image.h, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, splash_image.tostring)
     pygame.display.flip()
     time.sleep(delay)
 
@@ -92,19 +92,19 @@ def DisplaySplash(filename, delay, window_x, window_y):
 def DrawWindow(left_screen):
 
     def draw_nodata(x, y):  # Draw no data text on screen.
-        glColor(red)
-        glLineWidth(5.0)
-        glPushMatrix()
-        glTranslatef(x, y, 0)
-        glScalef(0.4, 0.4, 1.0)
-        glText("NO SIM DATA", 100)
-        glPopMatrix()
+        GL.glColor(guage.red)
+        GL.glLineWidth(5.0)
+        GL.glPushMatrix()
+        GL.glTranslatef(x, y, 0)
+        GL.glScalef(0.4, 0.4, 1.0)
+        guage.glText("NO SIM DATA", 100)
+        GL.glPopMatrix()
 
     global count
     left_screen.draw(aircraft_data)
     # right_screen.draw(aircraft_data)
-    glDisable(GL_SCISSOR_TEST)  # Disable any scissoring.
-    draw_FPS(512, 740, aircraft_data.frame_time)
+    GL.glDisable(GL.GL_SCISSOR_TEST)  # Disable any scissoring.
+    guage.draw_FPS(512, 740, aircraft_data.frame_time)
     # If Nodata is coming from Flight Sim, show on screen
     if aircraft_data.nodata:
         draw_nodata(50, 500)
@@ -128,11 +128,11 @@ def main(mode):
 
     while not (aircraft_data.quit_flag):
         # CLEAR SCREEN
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
         # UPDATE GLOBALTIME
         aircraft_data.globaltime = time.time()
-        globaltime.update(time.time())
+        guage.globaltime.update(time.time())
 
         # DRAW WINDOW
         DrawWindow(screen)
@@ -142,15 +142,15 @@ def main(mode):
         aircraft_data.test()
 
         # CHECK KEYPRESS
-        keys.check_events(pygame.event.get(), globaltime.value)
+        keys.check_events(pygame.event.get(), guage.globaltime.value)
 
 # ===========================================================================
 #  Main program
 # ===========================================================================
 global count
 # global scissor
-scissor.x_s = 1.1  # Just assign these, will be reset later.
-scissor.y_s = 1.0
+guage.scissor.x_s = 1.1  # Just assign these, will be reset later.
+guage.scissor.y_s = 1.0
 count = 0
 x = config.window_x
 y = config.window_y
@@ -182,7 +182,7 @@ main(config.mode)
 #  Shuting Down
 # ===========================================================================
 # Close LogFile
-datafile.close()
+guage.datafile.close()
 # Close pygame mixer
 pygame.mixer.quit()
 # Print average Frames per second on shutdown
