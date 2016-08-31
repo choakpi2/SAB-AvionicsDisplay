@@ -5,12 +5,31 @@ from pygame import locals
 
 def scissor(x, y, w, h):
     global scissor
-    x_s = int(locals.scissor.x_s)
-    y_s = int(locals.scissor.y_s)
+    x_s = int(scissor.x_s)
+    y_s = int(scissor.y_s)
     GL.glScissor(x*x_s, y*y_s, w*x_s, h*y_s)
 
 
-class Alt_Guage:
+def glText(s, space=80):
+    'takes string input and outputs it to OpenGl Environment'
+    for c in s:
+        GL.glPushMatrix()
+        if c == "1":
+            GL.glTranslatef(16.0, 0.0, 0.0)
+        elif c == "I":
+            GL.glTranslatef(30.0, 0.0, 0.0)
+        elif c == "(":
+            GL.glTranslatef(25.0, 0.0, 0.0)
+        if c == ".":
+            s = 35
+        else:
+            s = space
+        GLUT.glutStrokeCharacter(GLUT.GLUT_STROKE_ROMAN, ord(c))
+        GL.glPopMatrix()
+        GL.glTranslatef(s, 0.0, 0.0)
+
+
+class ALT_Guage_747:
 
     def glText(s, space=80):
         'takes string input and outputs it to OpenGl Environment'
@@ -125,7 +144,7 @@ class Alt_Guage:
                 GL.glLineWidth(2.0)
                 GL.glScalef(0.15, 0.15, 1)  # Scale text, also done in else statement below.
                 s = str(temp) + "00"
-                self.glText(s, 90)
+                glText(s, 90)
                 GL.glPopMatrix()
 
             tick_ten = tick_ten + 1
@@ -224,7 +243,7 @@ class Alt_Guage:
 
             def text_out(d):  # Just output the text.
                 GL.glScalef(0.18, 0.20, 1.0)
-                self.glText("%2d" % d, 90)
+                glText("%2d" % d, 90)
 
             # Check to see if near change in thousand above 900 feet
             alt_1000 = alt % 1000
@@ -236,11 +255,11 @@ class Alt_Guage:
                 GL.glDisable(GL.GL_SCISSOR_TEST)  # Turn off so text will show up
                 GL.glTranslatef(28.0, 8.0, 0.0)
                 GL.glScalef(0.10, 0.10, 1.0)
-                self.glText("N", 0)
+                glText("N", 0)
                 GL.glTranslatef(0.0, -120.0, 0.0)
-                self.glText("E", 0)
+                glText("E", 0)
                 GL.glTranslatef(0.0, -120.0, 0.0)
-                self.glText("G", 0)
+                glText("G", 0)
             elif (alt_1000 >= 970):  # Close to change in thousand will roll digits
                 loc = 30 - (1000 - alt_1000)  # / 1.0
                 if ((thou + 1) % 10) > 0:  # If both digits aren't changing then don't roll the 10k digit
@@ -248,7 +267,7 @@ class Alt_Guage:
                         GL.glPushMatrix()  # Draw 10k digit in normal place
                         GL.glTranslatef(6.0, -10.0, 0.0)
                         GL.glScalef(0.18, 0.20, 1.0)
-                        self.glText("%d" % (thou // 10))
+                        glText("%d" % (thou // 10))
                         GL.glPopMatrix()
                     thou = thou % 10  # Change thou to mod 10 so only 1K digit is drawn
                 GL.glPushMatrix()
@@ -282,9 +301,9 @@ class Alt_Guage:
         GL.glPushMatrix()
         GL.glTranslatef(x, y, 0.0)  # Move to start of digits
         GL.glScalef(0.16, 0.16, 1.0)
-        self.glText("%2d" % (bug // 1000), 95)
+        glText("%2d" % (bug // 1000), 95)
         GL.glScalef(0.85, 0.85, 1.0)  # Scale digits 85%
-        self.glText("%03d" % (bug % 1000), 95)
+        glText("%03d" % (bug % 1000), 95)
         GL.glPopMatrix()
 
     def alt_setting_disp(self, setting, x, y):
@@ -299,41 +318,41 @@ class Alt_Guage:
         GL.glScalef(0.14, 0.15, 0)
         # value += 0.01
         if setting < 35:
-            self.glText("%5.2f" % setting, 90)  # Round it to 2 places after decimal point 0.01 is slight correction. (Rouding Error?)
+            glText("%5.2f" % setting, 90)  # Round it to 2 places after decimal point 0.01 is slight correction. (Rouding Error?)
         else:
-            self.glText("%4d" % setting, 90)
+            glText("%4d" % setting, 90)
         GL.glPopMatrix()  # Text 29.92
         # Display IN
         if setting < 35:  # Must by HG if under 35 HPA if not.
             GL.glTranslate(58, -1, 0)  # move for In display
             GL.glScalef(0.12, 0.12, 0)
-            self.glText("I N", 40)
+            glText("I N", 40)
         else:  # Must be HPA
             GL.glTranslate(53, -1, 0)
             GL.glScalef(0.12, 0.12, 0)
-            self.glText("HPA", 90)
+            glText("HPA", 90)
         GL.glPopMatrix()
 
-    def draw(self, altimeter, x, y, frame_time, declutter):
+    def draw(self, setting, altitude, bug, x, y, frame_time, declutter):
         y_center = 150.0
         GL.glPushMatrix()
         GL.glEnable(GL.GL_SCISSOR_TEST)
         scissor(x, y, 100, 300)
         GL.glTranslate(x, y, 0.0)
         GL.glLineWidth(1.0)
-        self.tick_marks(altimeter.indicated.value)
+        self.tick_marks(altitude)
         if not declutter:
-            self.thousand_alt_bug(altimeter.indicated.value, altimeter.bug.value, y_center)
-        self.thousand_tick_marks(altimeter.indicated.value, y_center)
+            self.thousand_alt_bug(altitude, bug, y_center)
+        self.thousand_tick_marks(altitude, y_center)
         if not declutter:
-            self.alt_bug(altimeter.indicated.value, altimeter.bug.value, y_center)
+            self.alt_bug(altitude, bug, y_center)
         GL.glPopMatrix()
 
         GL.glPushMatrix()
-        self.altitude_disp(altimeter.indicated.value, x, y + 150)
+        self.altitude_disp(altitude, x, y + 150)
         # print altimeter.value
         GL.glDisable(GL.GL_SCISSOR_TEST)
         if not declutter:
-            self.alt_bug_text(altimeter.bug.value, x+30, y+345)
-            self.alt_setting_disp(altimeter.setting, x+7, y-25)
+            self.alt_bug_text(altitude, x+30, y+345)
+            self.alt_setting_disp(setting, x+7, y-25)
         GL.glPopMatrix()

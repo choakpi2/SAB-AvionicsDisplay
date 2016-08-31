@@ -1,8 +1,8 @@
-# Importing the Necessary Packages
-import pygame
-from pygame import locals
+# Importing the Necessary Packages- Take note OpenGL before Pygame
 from OpenGL import GL
 from OpenGL import GLUT
+import pygame
+from pygame import locals
 import VSI_Guage_747
 import ALT_Guage_747
 
@@ -32,7 +32,7 @@ def InitView(smooth, width, height):
         GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_DONT_CARE)
 
 
-def main(x, y, objDraw):
+def main(x, y, objDraw1, objDraw2):
     while True:
         # Quit Condition
         for event in pygame.event.get():
@@ -40,7 +40,8 @@ def main(x, y, objDraw):
                 pygame.quit()
                 quit()
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-        objDraw.draw(x/2, y/2)
+        objDraw1.draw(x/2, y/2)
+        objDraw2.draw(29.92, 25, 3000, x/4, y/2, 1, False)
         pygame.display.flip()
         pygame.time.wait(10)
 
@@ -53,5 +54,6 @@ ALT_Guage_747.scissor.y_s = 1.0
 # Display Window through pygame
 InitPyGame()
 InitView(True, x, y)
+VSI = VSI_Guage_747.VSI_Guage_747()
 ALT = ALT_Guage_747.ALT_Guage_747()
-main(x, y, ALT)
+main(x, y, VSI, ALT)
