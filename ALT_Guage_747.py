@@ -31,24 +31,6 @@ def glText(s, space=80):
 
 class ALT_Guage_747:
 
-    def glText(s, space=80):
-        'takes string input and outputs it to OpenGl Environment'
-        for c in s:
-            GL.glPushMatrix()
-            if c == "1":
-                GL.glTranslatef(16.0, 0.0, 0.0)
-            elif c == "I":
-                GL.glTranslatef(30.0, 0.0, 0.0)
-            elif c == "(":
-                GL.glTranslatef(25.0, 0.0, 0.0)
-            if c == ".":
-                s = 35
-            else:
-                s = space
-            GLUT.glutStrokeCharacter(GLUT.GLUT_STROKE_ROMAN, ord(c))
-            GL.glPopMatrix()
-            GL.glTranslatef(s, 0.0, 0.0)
-
     def alt_bug(self, altitude, bug, y_center):
 
         def line(y):  # Draws purple lines for bug
@@ -73,7 +55,6 @@ class ALT_Guage_747:
             GL.glEnd()
 
     def tick_marks(self, altitude):
-
         def white_square():
             GL.glLineWidth(2.0)
             GL.glBegin(GL.GL_POLYGON)
@@ -340,19 +321,19 @@ class ALT_Guage_747:
         scissor(x, y, 100, 300)
         GL.glTranslate(x, y, 0.0)
         GL.glLineWidth(1.0)
-        self.tick_marks(altitude)
+
+        self.tick_marks(altitude)  # Tick Marks and Hundred Labels (Right)
         if not declutter:
-            self.thousand_alt_bug(altitude, bug, y_center)
-        self.thousand_tick_marks(altitude, y_center)
+            self.thousand_alt_bug(altitude, bug, y_center)  # Thousand Alt Bug (Left)
+        self.thousand_tick_marks(altitude, y_center)  # Thousand Tick Marks (Left)
         if not declutter:
-            self.alt_bug(altitude, bug, y_center)
+            self.alt_bug(altitude, bug, y_center)  # Hundred Alt Bug (Right)
         GL.glPopMatrix()
 
         GL.glPushMatrix()
-        self.altitude_disp(altitude, x, y + 150)
-        # print altimeter.value
+        self.altitude_disp(altitude, x, y + 150)  # Altitude Box with Thousand Number
         GL.glDisable(GL.GL_SCISSOR_TEST)
         if not declutter:
-            self.alt_bug_text(altitude, x+30, y+345)
-            self.alt_setting_disp(setting, x+7, y-25)
+            self.alt_bug_text(altitude, x+30, y+345)  # Altitude Bug Setting
+            self.alt_setting_disp(setting, x+7, y-25)  # Kollsman Window Setting
         GL.glPopMatrix()
