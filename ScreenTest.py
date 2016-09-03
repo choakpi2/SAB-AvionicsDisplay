@@ -41,7 +41,7 @@ def main(x, y, objDraw1, objDraw2):
                 quit()
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         objDraw1.draw(x/2, y/2)
-        objDraw2.draw(29.92, 25, 3000, x/4, y/2, 1, False)
+        objDraw2.draw(29.92, 25, 3000, x/4, y/2, 1, True)
         pygame.display.flip()
         pygame.time.wait(10)
 
