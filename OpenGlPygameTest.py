@@ -4,16 +4,38 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
+import os
+import time
+import random
 
 
 def InitPyGame():
     glutInit(())
     pygame.init()
-    s = pygame.display.set_mode((1024, 768), DOUBLEBUF | OPENGL)
+    disp_no = os.getenv("DISPLAY")
+    if disp_no:
+        print "I'm running under X display = {0}".format(disp_no)
+    drivers = ['fbcon', 'directfb', 'svgalib']
+    found = False
+    for driver in drivers:
+        if not os.getenv('SDL_VIDEODRIVER'):
+            os.putenv('SDL_VIDEODRIVER', driver)
+        try:
+            pygame.display.init()
+        except pygame.error:
+            print 'Driver: {0} failed.'.format(driver)
+            continue
+        found = True
+        break
+    if not found:
+        raise Exception('No suitable video driver found!')
+    size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+    print "Framebuffer size: %d x %d" % (size[0], size[1])
+    s = pygame.display.set_mode(size, FULLSCREEN | DOUBLEBUF | OPENGL)
     return s
 
 
-def InitView(smooth, width, height):
+def InitView(smooth):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
     if smooth:
@@ -83,5 +105,5 @@ x = 1024
 y = 768
 # Display Window through pygame
 InitPyGame()
-InitView(True, x, y)
+InitView(True)
 main(x, y)
