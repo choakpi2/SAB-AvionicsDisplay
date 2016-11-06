@@ -4,6 +4,7 @@ import time
 import random
 
 
+# CHARLIE IS LATE TODAY AGAIN
 class pyscope :
 	screen = None;
 
