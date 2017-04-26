@@ -28,8 +28,8 @@ class screen_c(object):
         self.guage_index = 0
         self.x = x
         self.y = 20
-        self.width = 512
-        self.heigth = 768
+        self.width = 480
+        self.heigth = 800
 
     def cycle(self):
         self.guage_index += 1
@@ -50,9 +50,9 @@ def InitPyGame():
     GLUT.glutInit(())
     pygame.init()
     if config.full_screen:
-        s = pygame.display.set_mode((1024, 768), locals.DOUBLEBUF | locals.OPENGL | locals.FULLSCREEN)
+        s = pygame.display.set_mode((480, 800), locals.DOUBLEBUF | locals.OPENGL | locals.FULLSCREEN)
     else:
-        s = pygame.display.set_mode((1024, 768), locals.DOUBLEBUF | locals.OPENGL)
+        s = pygame.display.set_mode((480, 800), locals.DOUBLEBUF | locals.OPENGL)
     return s
 
 
@@ -61,8 +61,8 @@ def InitView(smooth, width, heigth):
     GL.glLoadIdentity()
     GL.glOrtho(0, width, 0.0, heigth, -1.0, 1.0)
 
-    x_s = width/1024.0
-    y_s = heigth/768.0
+    x_s = width/480.0
+    y_s = heigth/800.0
 
     GL.glScalef(x_s, y_s, 1.0)
     guage.scissor.x_s = x_s
@@ -104,10 +104,10 @@ def DrawWindow(left_screen):
     left_screen.draw(aircraft_data)
     # right_screen.draw(aircraft_data)
     GL.glDisable(GL.GL_SCISSOR_TEST)  # Disable any scissoring.
-    guage.draw_FPS(512, 740, aircraft_data.frame_time)
+    guage.draw_FPS(240, 700, aircraft_data.frame_time)
     # If Nodata is coming from Flight Sim, show on screen
     if aircraft_data.nodata:
-        draw_nodata(50, 500)
+        draw_nodata(50, 240)
     count = count + 1  # Used for FPS calc
 
 
@@ -118,7 +118,7 @@ def main(mode):
 
     # Start Event Processing Engine
     starttime = time.time()  # Used for FPS (Frame Per Second) Calculation
-    screen = screen_c(512, [PFD, EICAS1])
+    screen = screen_c(240, [PFD, EICAS1])
 
     # SETUP KEYBOARD
     keys = keyboard.keylist(aircraft_data, screen)

@@ -17,9 +17,9 @@ LINES = 1
 
 # Screen / Window Setup
 #X resolution of window
-window_x = 1024
+window_x = 480
 #Y resolution of window
-window_y = 1024
+window_y = 800
 #Full screen
 full_screen= False
 
