@@ -442,7 +442,7 @@ class EICAS1_guage(object):
             
 
     def load_texture(self):
-            self.bg_image = texture_image(eicas_l_filename)    
+            self.bg_image = texture_image(config.eicas_l_filename)    
     
  
     def __init__(self):
