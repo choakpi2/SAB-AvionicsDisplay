@@ -31,10 +31,10 @@ data_directory = "data"
 sound_directory = "sounds"
 #Splash Screen setup
 splash = True
-splash_filename = 'images/splash.png'
+splash_filename = '/home/pi/SAB-AvionicsDisplay/software/gui/VisionDeployed/images/splash.png'
 splash_delay = 0
 #EICAS Texture setup
-eicas_l_filename = 'images/EICAS_L.png'
+eicas_l_filename = '/home/pi/SAB-AvionicsDisplay/software/gui/VisionDeployed/images/EICAS_L.png'
 #Metric Units
 use_metric_units = False
 #Set max and min lat long values for nav data
