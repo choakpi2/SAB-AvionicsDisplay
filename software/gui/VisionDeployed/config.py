@@ -33,6 +33,8 @@ sound_directory = "sounds"
 splash = True
 splash_filename = 'images/splash.png'
 splash_delay = 0
+#EICAS Texture setup
+eicas_l_filename = 'images/EICAS_L.png'
 #Metric Units
 use_metric_units = False
 #Set max and min lat long values for nav data
